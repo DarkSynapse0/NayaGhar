@@ -74,7 +74,7 @@ export default async function DashboardPage() {
                 <div className="relative flex items-center justify-between">
                   <div>
                     <p className="text-sm text-[var(--text-muted)]">{label}</p>
-                    <p className="text-4xl font-extrabold mt-2" style={{ fontFamily: "var(--font-mono)" }}>{value}</p>
+                    <p className="text-4xl font-extrabold mt-2">{value}</p>
                   </div>
                   <div className={`w-12 h-12 rounded-xl ${glow} flex items-center justify-center`}><Icon className={`w-6 h-6 ${iconColor}`} /></div>
                 </div>
@@ -92,8 +92,8 @@ export default async function DashboardPage() {
               {myListings.length === 0 ? (
                 <FadeIn delay={0.1}>
                   <div className="rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] p-12 text-center">
-                    <Building2 className="w-10 h-10 mx-auto text-white/10 mb-3" />
-                    <p className="text-white/50 mb-4">You haven&apos;t listed any properties yet</p>
+                    <Building2 className="w-10 h-10 mx-auto text-[var(--text-muted)] mb-3" />
+                    <p className="text-[var(--text-secondary)] mb-4">You haven&apos;t listed any properties yet</p>
                     <Link href="/listing/new"><Button><Plus className="w-4 h-4" /> Create Your First Listing</Button></Link>
                   </div>
                 </FadeIn>
@@ -112,7 +112,7 @@ export default async function DashboardPage() {
                           {listing.photos?.[0] ? (
                             <img src={listing.photos[0].url} alt="" className="w-full h-full object-cover" />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-white/10 text-xs">No photo</div>
+                            <div className="w-full h-full flex items-center justify-center text-[var(--text-muted)] text-xs">No photo</div>
                           )}
                         </div>
 
@@ -120,17 +120,17 @@ export default async function DashboardPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
                             <span className={`w-2 h-2 rounded-full flex-shrink-0 ${listing.isActive ? "bg-emerald-400" : "bg-red-400"}`} />
-                            <h3 className="font-semibold text-[15px] text-white truncate">{listing.title}</h3>
+                            <h3 className="font-semibold text-[15px] text-[var(--text)] truncate">{listing.title}</h3>
                           </div>
-                          <div className="flex items-center gap-1 text-[12px] text-white/25">
+                          <div className="flex items-center gap-1 text-[12px] text-[var(--text-muted)]">
                             <MapPin className="w-3 h-3" />
                             {listing.neighborhood ? `${listing.neighborhood}, ${listing.city}` : listing.city}
                           </div>
                           <div className="flex items-center gap-3 mt-2">
-                            <span className="text-sm font-bold text-[var(--accent)]" style={{ fontFamily: "var(--font-mono)" }}>
+                            <span className="text-sm font-bold text-[var(--accent)]">
                               Rs. {(listing.priceMonthly / 100).toLocaleString()}
                             </span>
-                            <span className="text-[11px] text-white/20">/month</span>
+                            <span className="text-[11px] text-[var(--text-muted)]">/month</span>
                           </div>
                         </div>
 
@@ -139,9 +139,9 @@ export default async function DashboardPage() {
                           <ListingToggle listingId={listing.id} initialActive={listing.isActive ?? true} />
                           <Link
                             href={`/listing/${listing.id}`}
-                            className="flex items-center justify-center w-10 h-10 rounded-xl border border-[var(--border)] hover:bg-white/[0.04] transition-colors"
+                            className="flex items-center justify-center w-10 h-10 rounded-xl border border-[var(--border)] hover:bg-[var(--bg-hover)] transition-colors"
                           >
-                            <ArrowUpRight className="w-4 h-4 text-white/40" />
+                            <ArrowUpRight className="w-4 h-4 text-[var(--text-secondary)]" />
                           </Link>
                         </div>
                       </div>
@@ -174,7 +174,7 @@ export default async function DashboardPage() {
                       <Icon className={`w-6 h-6 ${color} mt-0.5`} />
                       <div><h3 className="font-bold">{title}</h3><p className="text-sm text-[var(--text-muted)] mt-0.5">{desc}</p></div>
                     </div>
-                    {!disabled && <ArrowUpRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-white transition-colors" />}
+                    {!disabled && <ArrowUpRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--text)] transition-colors" />}
                   </div>
                 </div>
               </Link>

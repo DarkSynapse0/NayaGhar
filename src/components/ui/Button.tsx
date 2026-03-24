@@ -13,10 +13,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const variantStyles: Record<Variant, string> = {
   primary: "bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)]",
   secondary: "bg-white text-[var(--bg)] hover:bg-white/90",
-  outline: "border border-[var(--border-hover)] text-white hover:bg-[var(--bg-hover)]",
-  ghost: "text-[var(--text-secondary)] hover:text-white hover:bg-[var(--bg-hover)]",
-  destructive: "bg-[var(--red)] text-white hover:bg-[var(--red)]/80",
-  whatsapp: "bg-[#25D366] text-white hover:bg-[#1ebe5a]",
+  outline: "border border-[var(--border-hover)] text-[var(--text)] hover:bg-[var(--bg-hover)]",
+  ghost: "text-[var(--text-secondary)] hover:text-[var(--text)] hover:bg-[var(--bg-hover)]",
+  destructive: "bg-[var(--red)] text-[var(--text)] hover:bg-[var(--red)]/80",
+  whatsapp: "bg-[#25D366] text-[var(--text)] hover:bg-[#1ebe5a]",
 };
 
 const sizeStyles: Record<Size, string> = {

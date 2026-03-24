@@ -37,7 +37,7 @@ export default function SearchLoading() {
                   <div className="p-5 space-y-3">
                     <div className="h-4 w-3/4 rounded animate-shimmer" />
                     <div className="h-3 w-1/2 rounded animate-shimmer" />
-                    <div className="pt-2 border-t border-white/[0.04]">
+                    <div className="pt-2 border-t border-[var(--border)]">
                       <div className="h-5 w-24 rounded animate-shimmer" />
                     </div>
                   </div>

@@ -15,7 +15,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         <select
           ref={ref}
           id={selectId}
-          className={`h-11 rounded-xl bg-[var(--bg-elevated)] border border-[var(--border)] px-4 text-sm text-white transition-all duration-200 focus:outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--ring)] disabled:opacity-40 ${className}`}
+          className={`h-11 rounded-xl bg-[var(--bg-elevated)] border border-[var(--border)] px-4 text-sm text-[var(--text)] transition-all duration-200 focus:outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--ring)] disabled:opacity-40 ${className}`}
           {...props}
         >
           {placeholder && <option value="">{placeholder}</option>}

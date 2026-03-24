@@ -38,22 +38,22 @@ export function FilterPanel() {
     <div className="space-y-3">
       <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
         {propertyTypes.map(({ value, label, icon: Icon }) => (
-          <button key={value} onClick={() => toggleType(value)} className={`flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-semibold whitespace-nowrap border transition-all duration-200 ${currentType === value ? "bg-[var(--accent)] text-white border-[var(--accent)]" : "text-white/40 border-white/[0.06] hover:border-white/[0.12] hover:bg-white/[0.03]"}`}>
+          <button key={value} onClick={() => toggleType(value)} className={`flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-semibold whitespace-nowrap border transition-all duration-200 ${currentType === value ? "bg-[var(--accent)] text-white border-[var(--accent)]" : "text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--border-hover)] hover:bg-[var(--bg-hover)]"}`}>
             <Icon className="w-3.5 h-3.5" />{label}
           </button>
         ))}
 
-        <div className="w-px h-5 bg-white/[0.06] flex-shrink-0" />
+        <div className="w-px h-5 bg-[var(--bg-elevated)] flex-shrink-0" />
 
         {pricePresets.map(({ label, min, max }) => (
-          <button key={label} onClick={() => applyPrice(min, max)} className={`h-8 px-3 rounded-lg text-xs font-semibold whitespace-nowrap border transition-all duration-200 ${sp.get("minPrice") === min && sp.get("maxPrice") === max ? "bg-[var(--accent)] text-white border-[var(--accent)]" : "text-white/40 border-white/[0.06] hover:border-white/[0.12] hover:bg-white/[0.03]"}`}>
+          <button key={label} onClick={() => applyPrice(min, max)} className={`h-8 px-3 rounded-lg text-xs font-semibold whitespace-nowrap border transition-all duration-200 ${sp.get("minPrice") === min && sp.get("maxPrice") === max ? "bg-[var(--accent)] text-white border-[var(--accent)]" : "text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--border-hover)] hover:bg-[var(--bg-hover)]"}`}>
             {label}
           </button>
         ))}
 
-        <div className="w-px h-5 bg-white/[0.06] flex-shrink-0" />
+        <div className="w-px h-5 bg-[var(--bg-elevated)] flex-shrink-0" />
 
-        <button onClick={() => setShowAll(!showAll)} className="flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-semibold whitespace-nowrap border border-white/[0.06] text-white/40 hover:border-white/[0.12] hover:bg-white/[0.03] transition-all">
+        <button onClick={() => setShowAll(!showAll)} className="flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-semibold whitespace-nowrap border border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--border-hover)] hover:bg-[var(--bg-hover)] transition-all">
           <SlidersHorizontal className="w-3.5 h-3.5" />Custom
         </button>
 

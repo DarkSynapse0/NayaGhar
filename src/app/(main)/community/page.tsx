@@ -43,14 +43,14 @@ export default function CommunityPage() {
                       <MapPin className="w-4 h-4 text-[var(--text-muted)]" />
                       <h3 className="font-bold text-lg">{area.name}</h3>
                     </div>
-                    <ArrowUpRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-white transition-colors" />
+                    <ArrowUpRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--text)] transition-colors" />
                   </div>
                   <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{area.desc}</p>
                   <div className="flex gap-2 mt-4">
                     {area.tags.map((tag) => {
                       const Icon = tagIcons[tag];
                       return (
-                        <span key={tag} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/5 text-xs font-semibold text-[var(--text-secondary)]">
+                        <span key={tag} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[var(--bg-hover)] text-xs font-semibold text-[var(--text-secondary)]">
                           {Icon && <Icon className="w-3 h-3" />}{tag}
                         </span>
                       );

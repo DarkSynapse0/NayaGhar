@@ -37,7 +37,7 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
     <div className="min-h-screen">
       <div className="mx-auto max-w-5xl px-5 sm:px-8 py-6 sm:py-8">
         <div className="flex items-center justify-between mb-5">
-          <Link href="/search" className="inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-white transition-colors">
+          <Link href="/search" className="inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--text)] transition-colors">
             <ArrowLeft className="w-4 h-4" />Back to search
           </Link>
           {isOwner && (

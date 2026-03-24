@@ -62,11 +62,11 @@ export function SearchBar({ defaultQuery = "", defaultCity = "" }: { defaultQuer
         <div className="flex-1 flex items-center min-w-0">
           <Search className="w-4 h-4 text-[var(--text-muted)] ml-4 sm:ml-5 flex-shrink-0" />
           <input type="text" placeholder="Search by title, area, or keyword..." value={query} onChange={(e) => setQuery(e.target.value)} onFocus={() => { if (hasSuggestions) setShowDropdown(true); }}
-            className="flex-1 px-3 py-3 bg-transparent text-sm text-white placeholder:text-[var(--text-muted)] focus:outline-none min-w-0" autoComplete="off" />
-          {query && <button type="button" onClick={() => { setQuery(""); setSuggestions({ cities: [], listings: [] }); setShowDropdown(false); }} className="p-1.5 rounded-full hover:bg-white/5"><X className="w-3.5 h-3.5 text-[var(--text-muted)]" /></button>}
+            className="flex-1 px-3 py-3 bg-transparent text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] focus:outline-none min-w-0" autoComplete="off" />
+          {query && <button type="button" onClick={() => { setQuery(""); setSuggestions({ cities: [], listings: [] }); setShowDropdown(false); }} className="p-1.5 rounded-full hover:bg-[var(--bg-hover)]"><X className="w-3.5 h-3.5 text-[var(--text-muted)]" /></button>}
         </div>
         <div className="hidden sm:block">
-          <button type="button" onClick={() => { setCityOpen(!cityOpen); setShowDropdown(false); }} className="flex items-center gap-1.5 px-4 py-3 border-l border-[var(--border)] text-sm text-[var(--text-secondary)] hover:text-white transition-colors whitespace-nowrap">
+          <button type="button" onClick={() => { setCityOpen(!cityOpen); setShowDropdown(false); }} className="flex items-center gap-1.5 px-4 py-3 border-l border-[var(--border)] text-sm text-[var(--text-secondary)] hover:text-[var(--text)] transition-colors whitespace-nowrap">
             <MapPin className="w-3.5 h-3.5 flex-shrink-0" /><span>{selectedCityLabel}</span><ChevronDown className={`w-3.5 h-3.5 transition-transform ${cityOpen ? "rotate-180" : ""}`} />
           </button>
         </div>
@@ -84,9 +84,9 @@ export function SearchBar({ defaultQuery = "", defaultCity = "" }: { defaultQuer
 
       {/* City dropdown */}
       {cityOpen && (
-        <div className="absolute right-12 top-full mt-2 w-48 bg-[#141414] rounded-xl border border-white/[0.08] shadow-warm-4 max-h-[280px] overflow-y-auto overscroll-contain animate-scale-in">
+        <div className="absolute right-12 top-full mt-2 w-48 bg-[var(--bg-card)] rounded-xl border border-[var(--border-hover)] shadow-warm-4 max-h-[280px] overflow-y-auto overscroll-contain animate-scale-in">
           {CITIES.map((c) => (
-            <button key={c.value} type="button" onClick={() => selectCity(c.value)} className={`flex items-center justify-between w-full px-4 py-2.5 text-sm text-left transition-colors ${city === c.value ? "bg-[var(--accent)]/10 text-[var(--accent)]" : "text-white/50 hover:bg-white/5 hover:text-white"}`}>
+            <button key={c.value} type="button" onClick={() => selectCity(c.value)} className={`flex items-center justify-between w-full px-4 py-2.5 text-sm text-left transition-colors ${city === c.value ? "bg-[var(--accent)]/10 text-[var(--accent)]" : "text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text)]"}`}>
               <div className="flex items-center gap-2"><MapPin className="w-3.5 h-3.5" />{c.label}</div>
               {city === c.value && <Check className="w-4 h-4" />}
             </button>
@@ -96,30 +96,30 @@ export function SearchBar({ defaultQuery = "", defaultCity = "" }: { defaultQuer
 
       {/* Autocomplete dropdown */}
       {showDropdown && hasSuggestions && !cityOpen && (
-        <div className="absolute left-0 right-0 top-full mt-2 bg-[#141414] rounded-xl border border-white/[0.08] shadow-warm-4 max-h-[360px] overflow-y-auto overscroll-contain animate-scale-in">
+        <div className="absolute left-0 right-0 top-full mt-2 bg-[var(--bg-card)] rounded-xl border border-[var(--border-hover)] shadow-warm-4 max-h-[360px] overflow-y-auto overscroll-contain animate-scale-in">
           {suggestions.cities.length > 0 && (
             <div className="p-2">
-              <p className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white/20">Cities</p>
+              <p className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">Cities</p>
               {suggestions.cities.map((c) => (
-                <button key={c} onClick={() => { setShowDropdown(false); selectCity(c); }} className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-left hover:bg-white/5 transition-colors">
-                  <MapPin className="w-4 h-4 text-emerald-400" /><div><p className="text-sm font-medium text-white">{c}</p><p className="text-xs text-white/25">View all in {c}</p></div>
+                <button key={c} onClick={() => { setShowDropdown(false); selectCity(c); }} className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-left hover:bg-[var(--bg-hover)] transition-colors">
+                  <MapPin className="w-4 h-4 text-emerald-400" /><div><p className="text-sm font-medium text-[var(--text)]">{c}</p><p className="text-xs text-[var(--text-muted)]">View all in {c}</p></div>
                 </button>
               ))}
             </div>
           )}
           {suggestions.listings.length > 0 && (
-            <div className={`p-2 ${suggestions.cities.length > 0 ? "border-t border-white/[0.04]" : ""}`}>
-              <p className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white/20">Properties</p>
+            <div className={`p-2 ${suggestions.cities.length > 0 ? "border-t border-[var(--border)]" : ""}`}>
+              <p className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">Properties</p>
               {suggestions.listings.map((l) => (
-                <button key={l.id} onClick={() => selectListing(l.id)} className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-left hover:bg-white/5 transition-colors">
-                  <Home className="w-4 h-4 text-[var(--accent)]" /><div className="min-w-0 flex-1"><p className="text-sm font-medium text-white truncate">{l.title}</p><p className="text-xs text-white/25">{l.neighborhood ? `${l.neighborhood}, ` : ""}{l.city} · Rs. {(l.priceMonthly / 100).toLocaleString()}/mo</p></div>
+                <button key={l.id} onClick={() => selectListing(l.id)} className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-left hover:bg-[var(--bg-hover)] transition-colors">
+                  <Home className="w-4 h-4 text-[var(--accent)]" /><div className="min-w-0 flex-1"><p className="text-sm font-medium text-[var(--text)] truncate">{l.title}</p><p className="text-xs text-[var(--text-muted)]">{l.neighborhood ? `${l.neighborhood}, ` : ""}{l.city} · Rs. {(l.priceMonthly / 100).toLocaleString()}/mo</p></div>
                 </button>
               ))}
             </div>
           )}
-          <div className="p-2 border-t border-white/[0.04]">
-            <button onClick={() => searchFor(query)} className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-left hover:bg-white/5 transition-colors">
-              <Search className="w-4 h-4 text-white/20" /><p className="text-sm text-white/30">Search for &ldquo;<span className="font-medium text-white">{query}</span>&rdquo;</p>
+          <div className="p-2 border-t border-[var(--border)]">
+            <button onClick={() => searchFor(query)} className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-left hover:bg-[var(--bg-hover)] transition-colors">
+              <Search className="w-4 h-4 text-[var(--text-muted)]" /><p className="text-sm text-[var(--text-muted)]">Search for &ldquo;<span className="font-medium text-[var(--text)]">{query}</span>&rdquo;</p>
             </button>
           </div>
         </div>
@@ -127,8 +127,8 @@ export function SearchBar({ defaultQuery = "", defaultCity = "" }: { defaultQuer
 
       {/* Loading */}
       {loading && query.length >= 2 && !hasSuggestions && (
-        <div className="absolute left-0 right-0 top-full mt-2 bg-[#141414] rounded-xl border border-white/[0.08] shadow-warm-4 p-4 animate-fade-in">
-          <div className="flex items-center gap-3"><div className="w-4 h-4 rounded-full border-2 border-[var(--accent)] border-t-transparent animate-spin" /><p className="text-sm text-white/30">Searching...</p></div>
+        <div className="absolute left-0 right-0 top-full mt-2 bg-[var(--bg-card)] rounded-xl border border-[var(--border-hover)] shadow-warm-4 p-4 animate-fade-in">
+          <div className="flex items-center gap-3"><div className="w-4 h-4 rounded-full border-2 border-[var(--accent)] border-t-transparent animate-spin" /><p className="text-sm text-[var(--text-muted)]">Searching...</p></div>
         </div>
       )}
     </div>

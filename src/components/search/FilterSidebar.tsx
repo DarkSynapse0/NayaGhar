@@ -25,10 +25,10 @@ const pricePresets = [
 function FilterSection({ title, defaultOpen = true, children }: { title: string; defaultOpen?: boolean; children: React.ReactNode }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border-b border-white/[0.04] pb-5">
+    <div className="border-b border-[var(--border)] pb-5">
       <button onClick={() => setOpen(!open)} className="flex items-center justify-between w-full py-2 group">
-        <span className="text-sm font-semibold text-white">{title}</span>
-        <ChevronUp className={`w-4 h-4 text-white/20 group-hover:text-white/40 transition-all duration-200 ${open ? "" : "rotate-180"}`} />
+        <span className="text-sm font-semibold text-[var(--text)]">{title}</span>
+        <ChevronUp className={`w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--text-secondary)] transition-all duration-200 ${open ? "" : "rotate-180"}`} />
       </button>
       {open && <div className="mt-3">{children}</div>}
     </div>
@@ -80,13 +80,13 @@ export function FilterSidebar({ defaultQuery = "", defaultCity = "" }: { default
       {/* Search input */}
       <form onSubmit={handleSearch}>
         <div className="relative">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
           <input
             type="text"
             placeholder="Search keywords..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full h-11 pl-10 pr-4 rounded-xl bg-[var(--bg-elevated)] border border-white/[0.06] text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20 transition-all"
+            className="w-full h-11 pl-10 pr-4 rounded-xl bg-[var(--bg-elevated)] border border-[var(--border)] text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20 transition-all"
           />
         </div>
       </form>
@@ -108,7 +108,7 @@ export function FilterSidebar({ defaultQuery = "", defaultCity = "" }: { default
                 key={value}
                 onClick={() => updateParam("type", active ? "" : value)}
                 className={`flex items-center gap-3 w-full h-10 px-3 rounded-xl text-sm transition-all duration-200 ${
-                  active ? "bg-[var(--accent)]/10 text-[var(--accent)]" : "text-white/40 hover:bg-white/[0.03] hover:text-white/70"
+                  active ? "bg-[var(--accent)]/10 text-[var(--accent)]" : "text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-white/70"
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -130,7 +130,7 @@ export function FilterSidebar({ defaultQuery = "", defaultCity = "" }: { default
                 key={city}
                 onClick={() => updateParam("city", active ? "" : city)}
                 className={`flex items-center justify-between w-full h-10 px-3 rounded-xl text-sm transition-all duration-200 ${
-                  active ? "bg-[var(--accent)]/10 text-[var(--accent)]" : "text-white/40 hover:bg-white/[0.03] hover:text-white/70"
+                  active ? "bg-[var(--accent)]/10 text-[var(--accent)]" : "text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-white/70"
                 }`}
               >
                 {city}
@@ -151,7 +151,7 @@ export function FilterSidebar({ defaultQuery = "", defaultCity = "" }: { default
                 key={label}
                 onClick={() => applyPrice(active ? "" : min, active ? "" : max)}
                 className={`flex items-center justify-between w-full h-10 px-3 rounded-xl text-sm transition-all duration-200 ${
-                  active ? "bg-[var(--accent)]/10 text-[var(--accent)]" : "text-white/40 hover:bg-white/[0.03] hover:text-white/70"
+                  active ? "bg-[var(--accent)]/10 text-[var(--accent)]" : "text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-white/70"
                 }`}
               >
                 {label}

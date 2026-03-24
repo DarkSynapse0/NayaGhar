@@ -4,7 +4,7 @@ import { LogoIcon } from "@/components/ui/Logo";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen flex bg-[#0A0A0A] text-white">
+    <div className="min-h-screen flex bg-[var(--bg)]">
       {/* Brand panel */}
       <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/5 via-transparent to-emerald-500/3" />
@@ -28,7 +28,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
               { icon: Building2, text: "Free to list properties" },
             ].map(({ icon: Icon, text }) => (
               <div key={text} className="flex items-center gap-3 text-sm text-[var(--text-secondary)]">
-                <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center"><Icon className="w-4 h-4 text-[var(--accent)]" /></div>
+                <div className="w-8 h-8 rounded-lg bg-[var(--bg-hover)] flex items-center justify-center"><Icon className="w-4 h-4 text-[var(--accent)]" /></div>
                 {text}
               </div>
             ))}

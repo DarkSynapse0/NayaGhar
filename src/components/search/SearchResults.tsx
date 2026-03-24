@@ -21,16 +21,16 @@ export async function SearchResults({ searchParams }: { searchParams: Record<str
     <>
       <div className="flex items-center justify-between mb-5">
         <p className="text-sm text-[var(--text-muted)]">
-          <span className="text-white font-semibold">{results.length}</span> {results.length === 1 ? "property" : "properties"}
-          {searchParams.q && <span className="ml-1">for &ldquo;<span className="text-white">{searchParams.q}</span>&rdquo;</span>}
-          {searchParams.city && <span className="ml-1">in <span className="text-white">{searchParams.city}</span></span>}
+          <span className="text-[var(--text)] font-semibold">{results.length}</span> {results.length === 1 ? "property" : "properties"}
+          {searchParams.q && <span className="ml-1">for &ldquo;<span className="text-[var(--text)]">{searchParams.q}</span>&rdquo;</span>}
+          {searchParams.city && <span className="ml-1">in <span className="text-[var(--text)]">{searchParams.city}</span></span>}
         </p>
       </div>
 
       {results.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-white/[0.03] flex items-center justify-center mb-4">
-            <SearchIcon className="w-7 h-7 text-white/10" />
+          <div className="w-16 h-16 rounded-2xl bg-[var(--bg-hover)] flex items-center justify-center mb-4">
+            <SearchIcon className="w-7 h-7 text-[var(--text-muted)]" />
           </div>
           <p className="text-lg font-bold">No properties found</p>
           <p className="text-sm text-[var(--text-muted)] mt-1 max-w-xs">Try removing some filters or searching in a different city</p>
@@ -57,7 +57,7 @@ export function SearchResultsSkeleton() {
             <div className="p-5 space-y-3">
               <div className="h-4 w-3/4 rounded animate-shimmer" />
               <div className="h-3 w-1/2 rounded animate-shimmer" />
-              <div className="pt-2 border-t border-white/[0.04]">
+              <div className="pt-2 border-t border-[var(--border)]">
                 <div className="h-5 w-24 rounded animate-shimmer" />
               </div>
             </div>

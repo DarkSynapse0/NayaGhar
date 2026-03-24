@@ -6,7 +6,7 @@ export function ListingGrid({ listings }: { listings: Listing[] }) {
   if (listings.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-4">
+        <div className="w-16 h-16 rounded-2xl bg-[var(--bg-hover)] flex items-center justify-center mb-4">
           <Search className="w-7 h-7 text-[var(--text-muted)]" />
         </div>
         <p className="text-lg font-bold">No listings found</p>

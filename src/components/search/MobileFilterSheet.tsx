@@ -23,10 +23,10 @@ const pricePresets = [
 function FilterSection({ title, defaultOpen = true, children }: { title: string; defaultOpen?: boolean; children: React.ReactNode }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border-b border-white/[0.04] pb-4 mb-4">
+    <div className="border-b border-[var(--border)] pb-4 mb-4">
       <button onClick={() => setOpen(!open)} className="flex items-center justify-between w-full py-1 group">
-        <span className="text-sm font-semibold text-white">{title}</span>
-        <ChevronUp className={`w-4 h-4 text-white/20 transition-transform duration-200 ${open ? "" : "rotate-180"}`} />
+        <span className="text-sm font-semibold text-[var(--text)]">{title}</span>
+        <ChevronUp className={`w-4 h-4 text-[var(--text-muted)] transition-transform duration-200 ${open ? "" : "rotate-180"}`} />
       </button>
       {open && <div className="mt-3">{children}</div>}
     </div>
@@ -123,14 +123,14 @@ export function MobileFilterSheet({ defaultQuery, defaultCity }: { defaultQuery:
             className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-250 ${closing ? "opacity-0" : "animate-fade-in"}`}
             onClick={close}
           />
-          <div className={`absolute bottom-0 inset-x-0 max-h-[85vh] bg-[#111] border-t border-white/[0.06] rounded-t-2xl flex flex-col transition-transform duration-300 ease-out ${closing ? "translate-y-full" : "animate-slide-in-up"}`}>
+          <div className={`absolute bottom-0 inset-x-0 max-h-[85vh] bg-[var(--bg-card)] border-t border-[var(--border)] rounded-t-2xl flex flex-col transition-transform duration-300 ease-out ${closing ? "translate-y-full" : "animate-slide-in-up"}`}>
             {/* Handle */}
             <div className="flex items-center justify-center pt-3 pb-1">
               <div className="w-10 h-1 rounded-full bg-white/10" />
             </div>
 
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.04]">
+            <div className="flex items-center justify-between px-5 py-3 border-b border-[var(--border)]">
               <h3 className="text-base font-bold">Filters</h3>
               <div className="flex items-center gap-3">
                 {hasLocalFilters && (
@@ -138,8 +138,8 @@ export function MobileFilterSheet({ defaultQuery, defaultCity }: { defaultQuery:
                     Clear all
                   </button>
                 )}
-                <button onClick={close} className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-white/[0.04]">
-                  <X className="w-4 h-4 text-white/50" />
+                <button onClick={close} className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[var(--bg-hover)]">
+                  <X className="w-4 h-4 text-[var(--text-secondary)]" />
                 </button>
               </div>
             </div>
@@ -156,7 +156,7 @@ export function MobileFilterSheet({ defaultQuery, defaultCity }: { defaultQuery:
                         key={city}
                         onClick={() => setSelectedCity(active ? "" : city)}
                         className={`h-9 px-4 rounded-xl text-sm font-medium transition-all ${
-                          active ? "bg-[var(--accent)]/15 text-[var(--accent)] border border-[var(--accent)]/30" : "text-white/40 border border-white/[0.06] hover:bg-white/[0.03]"
+                          active ? "bg-[var(--accent)]/15 text-[var(--accent)] border border-[var(--accent)]/30" : "text-[var(--text-secondary)] border border-[var(--border)] hover:bg-[var(--bg-hover)]"
                         }`}
                       >
                         {city}
@@ -176,7 +176,7 @@ export function MobileFilterSheet({ defaultQuery, defaultCity }: { defaultQuery:
                         key={value}
                         onClick={() => setSelectedType(active ? "" : value)}
                         className={`flex items-center gap-1.5 h-9 px-4 rounded-xl text-sm font-medium transition-all ${
-                          active ? "bg-[var(--accent)]/15 text-[var(--accent)] border border-[var(--accent)]/30" : "text-white/40 border border-white/[0.06] hover:bg-white/[0.03]"
+                          active ? "bg-[var(--accent)]/15 text-[var(--accent)] border border-[var(--accent)]/30" : "text-[var(--text-secondary)] border border-[var(--border)] hover:bg-[var(--bg-hover)]"
                         }`}
                       >
                         <Icon className="w-3.5 h-3.5" />{label}
@@ -196,7 +196,7 @@ export function MobileFilterSheet({ defaultQuery, defaultCity }: { defaultQuery:
                         key={label}
                         onClick={() => togglePrice(min, max)}
                         className={`h-9 px-4 rounded-xl text-sm font-medium transition-all ${
-                          active ? "bg-[var(--accent)]/15 text-[var(--accent)] border border-[var(--accent)]/30" : "text-white/40 border border-white/[0.06] hover:bg-white/[0.03]"
+                          active ? "bg-[var(--accent)]/15 text-[var(--accent)] border border-[var(--accent)]/30" : "text-[var(--text-secondary)] border border-[var(--border)] hover:bg-[var(--bg-hover)]"
                         }`}
                       >
                         {label}
@@ -208,7 +208,7 @@ export function MobileFilterSheet({ defaultQuery, defaultCity }: { defaultQuery:
             </div>
 
             {/* Apply button — sticky at bottom */}
-            <div className="px-5 py-4 border-t border-white/[0.04] bg-[#111]">
+            <div className="px-5 py-4 border-t border-[var(--border)] bg-[var(--bg-card)]">
               <button
                 onClick={applyFilters}
                 className="flex items-center justify-center gap-2 w-full h-12 rounded-xl bg-[var(--accent)] text-white text-sm font-semibold hover:bg-[var(--accent-hover)] active:scale-[0.98] transition-all"

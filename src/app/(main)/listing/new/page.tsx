@@ -215,7 +215,7 @@ export default function NewListingPage() {
               onClick={() => { if (i <= step) { setError(""); setStep(i); } }}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-semibold transition-all duration-300 ${
                 i === step
-                  ? "bg-primary text-white shadow-warm-2 scale-105"
+                  ? "bg-primary text-[var(--text)] shadow-warm-2 scale-105"
                   : i < step
                   ? "bg-accent-light text-accent cursor-pointer"
                   : "bg-muted text-muted-foreground cursor-not-allowed opacity-60"
@@ -292,7 +292,7 @@ export default function NewListingPage() {
                       }`}
                     >
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${
-                        selectedType === value ? "bg-primary text-white" : "bg-muted text-muted-foreground"
+                        selectedType === value ? "bg-primary text-[var(--text)]" : "bg-muted text-muted-foreground"
                       }`}>
                         <Icon className="w-5 h-5" />
                       </div>
@@ -473,10 +473,10 @@ export default function NewListingPage() {
                           onClick={() => removePhoto(i)}
                           className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                         >
-                          <span className="text-white text-xs font-bold">✕</span>
+                          <span className="text-[var(--text)] text-xs font-bold">✕</span>
                         </button>
                         {i === 0 && (
-                          <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-[var(--accent)]/80 text-white text-[10px] font-semibold">Cover</span>
+                          <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-[var(--accent)]/80 text-[var(--text)] text-[10px] font-semibold">Cover</span>
                         )}
                       </div>
                     ))}
@@ -496,13 +496,13 @@ export default function NewListingPage() {
                     {uploading ? (
                       <div className="flex flex-col items-center">
                         <div className="w-8 h-8 rounded-full border-2 border-[var(--accent)] border-t-transparent animate-spin mb-3" />
-                        <p className="text-sm text-white/50">Uploading...</p>
+                        <p className="text-sm text-[var(--text-secondary)]">Uploading...</p>
                       </div>
                     ) : (
                       <>
-                        <ImagePlus className="w-8 h-8 mx-auto text-white/15 mb-3" />
+                        <ImagePlus className="w-8 h-8 mx-auto text-[var(--text-muted)] mb-3" />
                         <p className="text-sm font-medium text-white/60">Click to upload photos</p>
-                        <p className="text-xs text-white/25 mt-1">JPG, PNG up to 5MB each · Max 5 photos</p>
+                        <p className="text-xs text-[var(--text-muted)] mt-1">JPG, PNG up to 5MB each · Max 5 photos</p>
                       </>
                     )}
                   </label>

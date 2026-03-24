@@ -92,7 +92,7 @@ export function ListingMarkers({
             anchor="bottom"
           >
             <button
-              onClick={() => onListingClick?.(listing)}
+              onClick={(e) => { e.stopPropagation(); onListingClick?.(listing); }}
               className="bg-white text-primary font-bold text-xs px-2 py-1 rounded-lg shadow-md border border-border hover:bg-primary hover:text-white transition-colors whitespace-nowrap"
             >
               {formatPrice(listing.priceMonthly)}

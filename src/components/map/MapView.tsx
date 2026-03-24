@@ -5,7 +5,6 @@ import Map, { NavigationControl, Popup, type MapRef, type ViewStateChangeEvent }
 import "maplibre-gl/dist/maplibre-gl.css";
 import Link from "next/link";
 import { ListingMarkers } from "./ListingMarkers";
-import { Badge } from "@/components/ui/Badge";
 import type { Listing } from "@/types/listing";
 
 const OPENFREEMAP_STYLE = "https://tiles.openfreemap.org/styles/liberty";
@@ -16,14 +15,6 @@ const DEFAULT_VIEW = {
   longitude: 84.1240,
   zoom: 7,
 };
-
-function formatPrice(paisa: number): string {
-  return new Intl.NumberFormat("ne-NP", {
-    style: "currency",
-    currency: "NPR",
-    maximumFractionDigits: 0,
-  }).format(paisa / 100);
-}
 
 interface MapViewProps {
   listings: Listing[];
@@ -78,6 +69,7 @@ export function MapView({
       {...viewState}
       onMove={(evt) => setViewState(evt.viewState)}
       onMoveEnd={handleMoveEnd}
+      onClick={() => setSelectedListing(null)}
       mapStyle={OPENFREEMAP_STYLE}
       style={{ width: "100%", height: "100%" }}
       attributionControl={{ compact: true }}
@@ -95,31 +87,37 @@ export function MapView({
           onClose={() => setSelectedListing(null)}
           closeOnClick={false}
           anchor="top"
-          maxWidth="260px"
+          maxWidth="280px"
         >
-          <Link href={`/listing/${selectedListing.id}`} className="block">
-            {selectedListing.photos?.[0] && (
-              <img
-                src={selectedListing.photos[0].url}
-                alt={selectedListing.title}
-                className="w-full h-24 object-cover rounded-t"
-                loading="lazy"
-              />
+          <Link href={`/listing/${selectedListing.id}`} className="block bg-[var(--bg-card)] rounded-xl overflow-hidden border border-[var(--border)]" onClick={(e) => e.stopPropagation()}>
+            {selectedListing.photos?.[0] ? (
+              <div className="relative h-32 overflow-hidden">
+                <img
+                  src={selectedListing.photos[0].url}
+                  alt={selectedListing.title}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                {selectedListing.isVerified && (
+                  <span className="absolute top-2 left-2 flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-500/80 text-white text-[10px] font-semibold backdrop-blur-sm">✓ Verified</span>
+                )}
+              </div>
+            ) : (
+              <div className="h-20 bg-[var(--bg-elevated)] flex items-center justify-center text-[var(--text-muted)] text-xs">No photo</div>
             )}
-            <div className="p-2">
-              <h3 className="font-semibold text-sm text-foreground truncate">
+            <div className="p-3">
+              <h3 className="font-semibold text-[13px] text-[var(--text)] leading-tight truncate">
                 {selectedListing.title}
               </h3>
-              <p className="text-xs text-muted-foreground truncate">
-                {selectedListing.neighborhood || selectedListing.city}
+              <p className="text-[11px] text-[var(--text-muted)] mt-1 truncate">
+                {selectedListing.neighborhood ? `${selectedListing.neighborhood}, ${selectedListing.city}` : selectedListing.city}
               </p>
-              <div className="flex items-center justify-between mt-1">
-                <span className="text-sm font-bold text-primary">
-                  {formatPrice(selectedListing.priceMonthly)}/mo
+              <div className="mt-2 pt-2 border-t border-[var(--border)]">
+                <span className="text-[15px] font-bold text-[var(--accent)]">
+                  Rs. {(selectedListing.priceMonthly / 100).toLocaleString()}
                 </span>
-                {selectedListing.isVerified && (
-                  <Badge variant="success">Verified</Badge>
-                )}
+                <span className="text-[11px] text-[var(--text-muted)] ml-1">/mo</span>
               </div>
             </div>
           </Link>

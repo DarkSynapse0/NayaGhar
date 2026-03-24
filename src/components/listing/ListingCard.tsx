@@ -31,7 +31,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
 
   return (
     <Link ref={cardRef} href={`/listing/${listing.id}`} className="block will-change-transform">
-      <div className="relative rounded-[20px] overflow-hidden bg-[#111] border border-white/[0.06] hover:border-white/[0.1] transition-[border-color] duration-500 group">
+      <div className="relative rounded-[20px] overflow-hidden bg-[var(--bg-card)] border border-[var(--border)] hover:border-white/[0.1] transition-[border-color] duration-500 group">
 
         {/* Image area */}
         <div className="relative h-56 sm:h-60 overflow-hidden">
@@ -43,13 +43,13 @@ export function ListingCard({ listing }: { listing: Listing }) {
               loading="lazy"
             />
           ) : (
-            <div className="w-full h-full bg-[#161616] flex items-center justify-center">
-              <span className="text-white/10 text-xs uppercase tracking-widest">No Image</span>
+            <div className="w-full h-full bg-[var(--bg-elevated)] flex items-center justify-center">
+              <span className="text-[var(--text-muted)] text-xs uppercase tracking-widest">No Image</span>
             </div>
           )}
 
           {/* Permanent dark gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#111] via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
           {/* Top row — type pill */}
           <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
@@ -74,19 +74,19 @@ export function ListingCard({ listing }: { listing: Listing }) {
 
           {/* Arrow — bottom right */}
           <div className="absolute bottom-4 right-4 w-9 h-9 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-            <ArrowUpRight className="w-4 h-4 text-white" />
+            <ArrowUpRight className="w-4 h-4 text-[var(--text)]" />
           </div>
         </div>
 
         {/* Info */}
         <div className="px-5 pb-5 pt-3 space-y-3">
           <div>
-            <h3 className="font-bold text-[15px] text-white leading-snug line-clamp-1 group-hover:text-[var(--accent)] transition-colors duration-300">
+            <h3 className="font-bold text-[15px] text-[var(--text)] leading-snug line-clamp-1 group-hover:text-[var(--accent)] transition-colors duration-300">
               {listing.title}
             </h3>
             <div className="flex items-center gap-1 mt-1.5">
-              <MapPin className="w-3 h-3 text-white/20 flex-shrink-0" />
-              <span className="text-[12px] text-white/30 truncate">
+              <MapPin className="w-3 h-3 text-[var(--text-muted)] flex-shrink-0" />
+              <span className="text-[12px] text-[var(--text-muted)] truncate">
                 {listing.neighborhood ? `${listing.neighborhood}, ${listing.city}` : listing.city}
               </span>
             </div>
@@ -98,13 +98,13 @@ export function ListingCard({ listing }: { listing: Listing }) {
               {amenities.map(([key]) => {
                 const Icon = amenityIcons[key];
                 return Icon ? (
-                  <div key={key} className="w-6 h-6 rounded-md bg-white/[0.04] flex items-center justify-center" title={key}>
-                    <Icon className="w-3 h-3 text-white/25" />
+                  <div key={key} className="w-6 h-6 rounded-md bg-[var(--bg-hover)] flex items-center justify-center" title={key}>
+                    <Icon className="w-3 h-3 text-[var(--text-muted)]" />
                   </div>
                 ) : null;
               })}
               {listing.amenities && Object.values(listing.amenities).filter(Boolean).length > 3 && (
-                <span className="text-[10px] text-white/20 ml-1">
+                <span className="text-[10px] text-[var(--text-muted)] ml-1">
                   +{Object.values(listing.amenities).filter(Boolean).length - 3}
                 </span>
               )}
@@ -112,12 +112,12 @@ export function ListingCard({ listing }: { listing: Listing }) {
           )}
 
           {/* Price */}
-          <div className="pt-2 border-t border-white/[0.04]">
-            <span className="text-[11px] text-white/25 font-medium mr-0.5">Rs.</span>
-            <span className="text-lg font-extrabold text-[var(--accent)] tabular-nums" style={{ fontFamily: "var(--font-mono)" }}>
+          <div className="pt-2 border-t border-[var(--border)]">
+            <span className="text-[11px] text-[var(--text-muted)] font-medium mr-0.5">Rs.</span>
+            <span className="text-lg font-extrabold text-[var(--accent)]">
               {formatPrice(listing.priceMonthly)}
             </span>
-            <span className="text-[11px] text-white/25 font-medium ml-0.5">/mo</span>
+            <span className="text-[11px] text-[var(--text-muted)] font-medium ml-0.5">/mo</span>
           </div>
         </div>
       </div>

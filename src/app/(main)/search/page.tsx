@@ -22,7 +22,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
             <div>
               <p className="text-sm text-[var(--accent)] font-semibold tracking-wider uppercase mb-2">Search</p>
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                Find Your<br /><span className="text-white/30">Space.</span>
+                Find Your<br /><span className="text-[var(--text-muted)]">Space.</span>
               </h1>
             </div>
             {hasFilters && (
