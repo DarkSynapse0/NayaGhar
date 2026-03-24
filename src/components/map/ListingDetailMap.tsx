@@ -42,6 +42,7 @@ export function ListingDetailMap({
       neighborhood: null,
       amenities: {},
       photos: [],
+      videos: [],
       isVerified: false,
       isActive: true,
       availableFrom: null,

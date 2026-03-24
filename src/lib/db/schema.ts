@@ -83,6 +83,9 @@ export const listings = pgTable(
     photos: jsonb("photos")
       .$type<{ url: string; order: number; alt?: string }[]>()
       .default([]),
+    videos: jsonb("videos")
+      .$type<{ url: string; thumbnail?: string; duration?: number }[]>()
+      .default([]),
     isVerified: boolean("is_verified").default(false),
     isActive: boolean("is_active").default(true),
     availableFrom: date("available_from"),

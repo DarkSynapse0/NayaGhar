@@ -47,7 +47,8 @@ export default function NewListingPage() {
   const [error, setError] = useState("");
   const [amenities, setAmenities] = useState<Record<string, boolean>>({});
   const [selectedType, setSelectedType] = useState("");
-  const [photos, setPhotos] = useState<{ url: string; order: number; alt: string; preview?: string }[]>([]);
+  const [photos, setPhotos] = useState<{ url: string; order: number; alt: string }[]>([]);
+  const [videos, setVideos] = useState<{ url: string; thumbnail?: string; duration?: number }[]>([]);
   const [uploading, setUploading] = useState(false);
 
   // Form state
@@ -105,14 +106,9 @@ export default function NewListingPage() {
 
   function prevStep() { setError(""); if (step > 0) setStep(step - 1); }
 
-  async function handlePhotoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleMediaUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files;
     if (!files || files.length === 0) return;
-
-    if (photos.length + files.length > 5) {
-      setError("Maximum 5 photos allowed");
-      return;
-    }
 
     setUploading(true);
     setError("");
@@ -131,9 +127,14 @@ export default function NewListingPage() {
         return;
       }
 
-      setPhotos((prev) => [...prev, ...data.data]);
+      if (data.data.images?.length) {
+        setPhotos((prev) => [...prev, ...data.data.images]);
+      }
+      if (data.data.videos?.length) {
+        setVideos((prev) => [...prev, ...data.data.videos]);
+      }
     } catch {
-      setError("Failed to upload photos");
+      setError("Failed to upload files");
     } finally {
       setUploading(false);
       e.target.value = "";
@@ -142,6 +143,10 @@ export default function NewListingPage() {
 
   function removePhoto(index: number) {
     setPhotos((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  function removeVideo(index: number) {
+    setVideos((prev) => prev.filter((_, i) => i !== index));
   }
 
   async function handleSubmit() {
@@ -162,6 +167,7 @@ export default function NewListingPage() {
       availableFrom: form.availableFrom || null,
       amenities,
       photos: photos.map((p, i) => ({ url: p.url, order: i, alt: p.alt })),
+      videos: videos.map((v) => ({ url: v.url, thumbnail: v.thumbnail, duration: v.duration })),
       landlordId: session!.user.id,
     };
 
@@ -340,12 +346,38 @@ export default function NewListingPage() {
               </div>
 
               <div className="rounded-[14px] border border-border bg-muted/50 p-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <MapPin className="w-4 h-4 text-primary" />
-                  <label className="text-sm font-semibold text-foreground">Pin Location</label>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-primary" />
+                    <label className="text-sm font-semibold text-foreground">Pin Location</label>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!navigator.geolocation) {
+                        setError("Geolocation is not supported by your browser");
+                        return;
+                      }
+                      setError("");
+                      navigator.geolocation.getCurrentPosition(
+                        (pos) => {
+                          updateForm("latitude", pos.coords.latitude.toFixed(6));
+                          updateForm("longitude", pos.coords.longitude.toFixed(6));
+                        },
+                        (err) => {
+                          setError(err.code === 1 ? "Location permission denied. Please allow location access." : "Could not get your location. Try again.");
+                        },
+                        { enableHighAccuracy: true, timeout: 10000 }
+                      );
+                    }}
+                    className="flex items-center gap-1.5 h-8 px-3 rounded-lg bg-[var(--accent)]/10 text-[var(--accent)] text-xs font-semibold hover:bg-[var(--accent)]/15 transition-colors"
+                  >
+                    <MapPin className="w-3.5 h-3.5" />
+                    Use My Location
+                  </button>
                 </div>
                 <p className="text-xs text-muted-foreground mb-4">
-                  Enter coordinates or use a map to find your property location
+                  Tap &quot;Use My Location&quot; or enter coordinates manually
                 </p>
                 <div className="grid grid-cols-2 gap-4">
                   <Input
@@ -367,6 +399,12 @@ export default function NewListingPage() {
                     required
                   />
                 </div>
+                {form.latitude && form.longitude && (
+                  <div className="mt-3 flex items-center gap-2 text-xs text-[var(--green)]">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[var(--green)]" />
+                    Location set: {form.latitude}, {form.longitude}
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -458,56 +496,69 @@ export default function NewListingPage() {
                 </div>
               </div>
 
-              {/* Photo upload */}
+              {/* Photos */}
               <div>
-                <label className="text-sm font-semibold text-foreground">Property Photos <span className="text-muted-foreground font-normal">({photos.length}/5)</span></label>
-
-                {/* Uploaded photos */}
+                <label className="text-sm font-semibold text-foreground">Photos <span className="text-muted-foreground font-normal">({photos.length}/5)</span></label>
                 {photos.length > 0 && (
                   <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {photos.map((photo, i) => (
                       <div key={i} className="relative rounded-xl overflow-hidden aspect-[4/3] bg-[var(--bg-elevated)] group">
                         <img src={photo.url} alt={photo.alt} className="w-full h-full object-cover" />
-                        <button
-                          type="button"
-                          onClick={() => removePhoto(i)}
-                          className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <span className="text-[var(--text)] text-xs font-bold">✕</span>
+                        <button type="button" onClick={() => removePhoto(i)} className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <span className="text-white text-xs font-bold">✕</span>
                         </button>
-                        {i === 0 && (
-                          <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-[var(--accent)]/80 text-[var(--text)] text-[10px] font-semibold">Cover</span>
+                        {i === 0 && <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-[var(--accent)]/80 text-white text-[10px] font-semibold">Cover</span>}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {photos.length < 5 && (
+                  <label className={`mt-3 block border-2 border-dashed border-[var(--border)] rounded-[14px] p-6 text-center hover:border-[var(--accent)]/30 hover:bg-[var(--accent)]/[0.03] transition-all duration-200 cursor-pointer ${uploading ? "opacity-50 pointer-events-none" : ""}`}>
+                    <input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={handleMediaUpload} className="hidden" />
+                    <ImagePlus className="w-6 h-6 mx-auto text-[var(--text-muted)] mb-2" />
+                    <p className="text-sm font-medium text-[var(--text-secondary)]">Upload photos</p>
+                    <p className="text-xs text-[var(--text-muted)] mt-1">JPG, PNG, WebP · Max 5MB each</p>
+                  </label>
+                )}
+              </div>
+
+              {/* Videos */}
+              <div>
+                <label className="text-sm font-semibold text-foreground">Videos <span className="text-muted-foreground font-normal">({videos.length}/2)</span></label>
+                {videos.length > 0 && (
+                  <div className="mt-3 space-y-2">
+                    {videos.map((video, i) => (
+                      <div key={i} className="relative rounded-xl overflow-hidden bg-[var(--bg-elevated)] group">
+                        <video src={video.url} className="w-full h-40 object-cover" controls preload="metadata" />
+                        <button type="button" onClick={() => removeVideo(i)} className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <span className="text-white text-xs font-bold">✕</span>
+                        </button>
+                        {video.duration && (
+                          <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-black/60 text-white text-[10px] font-semibold">
+                            {Math.floor(video.duration / 60)}:{String(Math.floor(video.duration % 60)).padStart(2, "0")}
+                          </span>
                         )}
                       </div>
                     ))}
                   </div>
                 )}
-
-                {/* Upload button */}
-                {photos.length < 5 && (
-                  <label className={`mt-3 block border-2 border-dashed border-[var(--border)] rounded-[14px] p-8 text-center hover:border-[var(--accent)]/30 hover:bg-[var(--accent)]/[0.03] transition-all duration-200 cursor-pointer ${uploading ? "opacity-50 pointer-events-none" : ""}`}>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={handlePhotoUpload}
-                      className="hidden"
-                    />
-                    {uploading ? (
-                      <div className="flex flex-col items-center">
-                        <div className="w-8 h-8 rounded-full border-2 border-[var(--accent)] border-t-transparent animate-spin mb-3" />
-                        <p className="text-sm text-[var(--text-secondary)]">Uploading...</p>
-                      </div>
-                    ) : (
-                      <>
-                        <ImagePlus className="w-8 h-8 mx-auto text-[var(--text-muted)] mb-3" />
-                        <p className="text-sm font-medium text-white/60">Click to upload photos</p>
-                        <p className="text-xs text-[var(--text-muted)] mt-1">JPG, PNG up to 5MB each · Max 5 photos</p>
-                      </>
-                    )}
+                {videos.length < 2 && (
+                  <label className={`mt-3 block border-2 border-dashed border-[var(--border)] rounded-[14px] p-6 text-center hover:border-[var(--accent)]/30 hover:bg-[var(--accent)]/[0.03] transition-all duration-200 cursor-pointer ${uploading ? "opacity-50 pointer-events-none" : ""}`}>
+                    <input type="file" accept="video/mp4,video/webm,video/quicktime" onChange={handleMediaUpload} className="hidden" />
+                    <ImagePlus className="w-6 h-6 mx-auto text-[var(--text-muted)] mb-2" />
+                    <p className="text-sm font-medium text-[var(--text-secondary)]">Upload video walkthrough</p>
+                    <p className="text-xs text-[var(--text-muted)] mt-1">MP4, WebM · Max 50MB · Max 2 videos</p>
                   </label>
                 )}
               </div>
+
+              {/* Uploading indicator */}
+              {uploading && (
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-[var(--accent)]/[0.05] border border-[var(--accent)]/10">
+                  <div className="w-5 h-5 rounded-full border-2 border-[var(--accent)] border-t-transparent animate-spin flex-shrink-0" />
+                  <p className="text-sm text-[var(--accent)]">Uploading to cloud...</p>
+                </div>
+              )}
 
               {/* Preview summary */}
               <div className="rounded-[14px] border border-border bg-muted/50 p-5">

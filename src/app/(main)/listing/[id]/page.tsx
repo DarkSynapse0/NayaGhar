@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { ListingDetailMap } from "@/components/map/ListingDetailMap";
 import { toNepaliDate } from "@/lib/nepali-date";
 import Link from "next/link";
+import { MediaGallery } from "@/components/listing/MediaGallery";
 import { BadgeCheck, MapPin, MessageCircle, Star, Shield, Phone, CalendarDays, Home, ArrowLeft, Wifi, Snowflake, WashingMachine, UtensilsCrossed, Car, Zap, Droplets, Sofa, Camera } from "lucide-react";
 
 function formatPrice(paisa: number): string { return `Rs. ${(paisa / 100).toLocaleString()}`; }
@@ -52,22 +53,20 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
           </div>
         )}
 
-        {/* Photos */}
-        <div className="rounded-2xl overflow-hidden border border-[var(--border)]">
-          {listing.photos && listing.photos.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-0.5">
-              {listing.photos.map((photo, i) => (
-                <div key={i} className={`bg-[var(--bg-elevated)] ${i === 0 ? "col-span-2 sm:row-span-2 h-52 sm:h-[400px]" : "h-32 sm:h-[198px]"}`}>
-                  <img src={photo.url} alt={photo.alt || `Photo ${i + 1}`} className="w-full h-full object-cover hover:opacity-90 transition-opacity" loading={i === 0 ? "eager" : "lazy"} />
-                </div>
-              ))}
-            </div>
+        {/* Media Gallery */}
+        {(() => {
+          const mediaItems = [
+            ...(listing.photos || []).map((p) => ({ type: "image" as const, url: p.url, alt: p.alt })),
+            ...(listing.videos || []).map((v) => ({ type: "video" as const, url: v.url, thumbnail: v.thumbnail })),
+          ];
+          return mediaItems.length > 0 ? (
+            <MediaGallery items={mediaItems} />
           ) : (
-            <div className="h-52 sm:h-72 bg-[var(--bg-elevated)] flex flex-col items-center justify-center text-[var(--text-muted)]">
-              <Camera className="w-10 h-10 mb-2 opacity-30" /><p className="text-sm">No photos</p>
+            <div className="rounded-2xl border border-[var(--border)] h-52 sm:h-72 bg-[var(--bg-elevated)] flex flex-col items-center justify-center text-[var(--text-muted)]">
+              <Camera className="w-10 h-10 mb-2 opacity-30" /><p className="text-sm">No photos or videos</p>
             </div>
-          )}
-        </div>
+          );
+        })()}
 
         {/* Header */}
         <div className="mt-6">
