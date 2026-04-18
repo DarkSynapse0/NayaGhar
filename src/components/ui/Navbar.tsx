@@ -20,7 +20,7 @@ export function Navbar() {
   const { data: session } = useSession();
   const pathname = usePathname();
   const { lang, setLang, currentFlag } = useLanguage();
-  const role = session?.user ? (session.user as { role: string }).role : null;
+  const role = session?.user?.role ?? null;
   const [open, setOpen] = useState(false);
   const [closing, setClosing] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -28,10 +28,26 @@ export function Navbar() {
   const userMenuRef = useRef<HTMLDivElement>(null);
   const langRef = useRef<HTMLDivElement>(null);
 
-  function closeSheet() { setClosing(true); setTimeout(() => { setOpen(false); setClosing(false); }, 250); }
-  function openSheet() { setOpen(true); setClosing(false); }
+  function closeSheet() {
+    setClosing(true);
+    setTimeout(() => {
+      setOpen(false);
+      setClosing(false);
+    }, 250);
+  }
 
-  useEffect(() => { if (open) closeSheet(); setUserMenuOpen(false); setLangOpen(false); }, [pathname]);
+  function openSheet() {
+    setOpen(true);
+    setClosing(false);
+  }
+
+  // Close all menus on navigation
+  useEffect(() => {
+    if (open) closeSheet();
+    setUserMenuOpen(false);
+    setLangOpen(false);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
   useEffect(() => {
     if (open) document.body.style.overflow = "hidden";
     else document.body.style.overflow = "";

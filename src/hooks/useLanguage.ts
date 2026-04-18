@@ -5,8 +5,8 @@ import { createContext, useContext, useState, useEffect, useCallback } from "rea
 export type Language = "en" | "ne";
 
 export const LANGUAGES = [
-  { code: "en" as const, label: "English", flag: "🇬🇧" },
-  { code: "ne" as const, label: "नेपाली", flag: "🇳🇵" },
+  { code: "en" as const, label: "English", flag: "\u{1F1EC}\u{1F1E7}" },
+  { code: "ne" as const, label: "\u0928\u0947\u092A\u093E\u0932\u0940", flag: "\u{1F1F3}\u{1F1F5}" },
 ];
 
 type LanguageContextType = {
@@ -19,7 +19,7 @@ type LanguageContextType = {
 export const LanguageContext = createContext<LanguageContextType>({
   lang: "en",
   setLang: () => {},
-  currentFlag: "🇬🇧",
+  currentFlag: "\u{1F1EC}\u{1F1E7}",
   currentLabel: "English",
 });
 
@@ -29,27 +29,43 @@ export function useLanguage() {
 
 let googleTranslateLoaded = false;
 
+/** Hide all Google Translate UI elements (banners, tooltips, iframes). */
 function hideGoogleUI() {
-  // Hide the skiptranslate bar (top banner)
-  document.querySelectorAll("body > .skiptranslate").forEach((el) => {
-    (el as HTMLElement).style.cssText = "display:none!important;height:0!important;overflow:hidden!important;";
+  document.querySelectorAll<HTMLElement>("body > .skiptranslate").forEach((el) => {
+    el.style.cssText = "display:none!important;height:0!important;overflow:hidden!important;";
   });
-  // Hide banner iframes
-  document.querySelectorAll("iframe.goog-te-banner-frame").forEach((el) => {
-    (el as HTMLElement).style.cssText = "display:none!important;";
+  document.querySelectorAll<HTMLElement>("iframe.goog-te-banner-frame").forEach((el) => {
+    el.style.cssText = "display:none!important;";
   });
-  // Hide tooltip
-  const tt = document.getElementById("goog-gt-tt");
-  if (tt) tt.style.display = "none";
-  // Fix body position
+  const tooltip = document.getElementById("goog-gt-tt");
+  if (tooltip) tooltip.style.display = "none";
   document.body.style.top = "0px";
+}
+
+/**
+ * Repeatedly call hideGoogleUI until the Google Translate UI is actually present
+ * and hidden, using requestAnimationFrame for efficiency instead of stacked setTimeouts.
+ */
+function hideGoogleUIUntilDone(maxAttempts = 20) {
+  let attempts = 0;
+  function tick() {
+    hideGoogleUI();
+    attempts++;
+    if (attempts < maxAttempts) {
+      requestAnimationFrame(tick);
+    }
+  }
+  requestAnimationFrame(tick);
 }
 
 function loadGoogleTranslate(): Promise<void> {
   return new Promise((resolve) => {
-    if (googleTranslateLoaded) { resolve(); return; }
+    if (googleTranslateLoaded) {
+      resolve();
+      return;
+    }
 
-    // Create a hidden wrapper
+    // Create a hidden wrapper for the Google Translate widget
     let wrapper = document.getElementById("gt-wrapper");
     if (!wrapper) {
       wrapper = document.createElement("div");
@@ -58,7 +74,6 @@ function loadGoogleTranslate(): Promise<void> {
       document.body.appendChild(wrapper);
     }
 
-    // Create translate element inside wrapper
     let el = document.getElementById("google_translate_element");
     if (!el) {
       el = document.createElement("div");
@@ -68,23 +83,19 @@ function loadGoogleTranslate(): Promise<void> {
 
     (window as unknown as Record<string, unknown>).googleTranslateElementInit = () => {
       const g = (window as unknown as Record<string, unknown>).google as {
-        translate: { TranslateElement: new (opts: unknown, id: string) => void }
+        translate: { TranslateElement: new (opts: unknown, id: string) => void };
       };
-      new g.translate.TranslateElement({
-        pageLanguage: "en",
-        includedLanguages: "en,ne",
-        autoDisplay: false,
-      }, "google_translate_element");
+      new g.translate.TranslateElement(
+        { pageLanguage: "en", includedLanguages: "en,ne", autoDisplay: false },
+        "google_translate_element"
+      );
       googleTranslateLoaded = true;
-
-      // Start hiding UI
-      hideGoogleUI();
-      setTimeout(hideGoogleUI, 200);
-      setTimeout(hideGoogleUI, 500);
+      hideGoogleUIUntilDone();
+      // Give the widget time to fully initialize before resolving
       setTimeout(resolve, 600);
     };
 
-    // Observe DOM to hide any Google UI that appears
+    // Use a MutationObserver to hide any Google UI that appears dynamically
     const observer = new MutationObserver(hideGoogleUI);
     observer.observe(document.body, { childList: true, subtree: false });
 
@@ -97,9 +108,11 @@ function loadGoogleTranslate(): Promise<void> {
 
 function setTranslateLanguage(lang: Language) {
   if (lang === "en") {
+    // Clear the Google Translate cookie and reload to restore English
+    const hostname = window.location.hostname;
     document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
-    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=." + window.location.hostname;
+    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${hostname}`;
+    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${hostname}`;
     window.location.reload();
   } else {
     const select = document.querySelector<HTMLSelectElement>(".goog-te-combo");
@@ -107,13 +120,7 @@ function setTranslateLanguage(lang: Language) {
       select.value = "ne";
       select.dispatchEvent(new Event("change"));
     }
-    hideGoogleUI();
-    setTimeout(hideGoogleUI, 100);
-    setTimeout(hideGoogleUI, 300);
-    setTimeout(hideGoogleUI, 500);
-    setTimeout(hideGoogleUI, 1000);
-    setTimeout(hideGoogleUI, 2000);
-    setTimeout(hideGoogleUI, 3000);
+    hideGoogleUIUntilDone();
   }
 }
 
@@ -124,10 +131,12 @@ export function useLanguageState() {
     const saved = localStorage.getItem("lang");
     if (saved === "ne") {
       setLangState("ne");
-      setTimeout(async () => {
+      // Delay loading Google Translate to avoid blocking initial render
+      const timer = setTimeout(async () => {
         await loadGoogleTranslate();
         setTimeout(() => setTranslateLanguage("ne"), 1000);
       }, 3000);
+      return () => clearTimeout(timer);
     }
   }, []);
 
@@ -143,7 +152,7 @@ export function useLanguageState() {
     }
   }, []);
 
-  const current = LANGUAGES.find((l) => l.code === lang) || LANGUAGES[0];
+  const current = LANGUAGES.find((l) => l.code === lang) ?? LANGUAGES[0];
 
   return {
     lang,

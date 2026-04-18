@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { getNepaliYear } from "@/lib/nepali-date";
+import { CITIES } from "@/lib/constants";
 import { LogoIcon } from "./Logo";
-import { MapPin, Mail, Phone } from "lucide-react";
+import { MapPin, Mail } from "lucide-react";
 
 export function Footer() {
   return (
@@ -87,14 +88,7 @@ export function Footer() {
               Cities
             </h4>
             <ul className="space-y-3">
-              {[
-                "Kathmandu",
-                "Lalitpur",
-                "Pokhara",
-                "Biratnagar",
-                "Bharatpur",
-                "Bhaktapur",
-              ].map((city) => (
+              {CITIES.map((city) => (
                 <li key={city}>
                   <Link
                     href={`/search?city=${city}`}

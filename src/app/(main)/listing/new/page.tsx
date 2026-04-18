@@ -6,31 +6,11 @@ import { useSession } from "next-auth/react";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
+import { PROPERTY_TYPES, AMENITY_OPTIONS } from "@/lib/constants";
 import {
-  DoorOpen, Building2, Users, BedDouble,
-  Wifi, Snowflake, WashingMachine, UtensilsCrossed, Car, Zap, Droplets, Sofa, Shield, Camera,
   MapPin, IndianRupee, CalendarDays, ImagePlus, FileText, Sparkles, ArrowRight, ArrowLeft, Check,
+  Building2,
 } from "lucide-react";
-
-const propertyTypes = [
-  { value: "room", label: "Room", icon: DoorOpen, desc: "Single or shared room" },
-  { value: "apartment", label: "Apartment", icon: Building2, desc: "Full apartment or flat" },
-  { value: "pg", label: "PG", icon: Users, desc: "Paying guest accommodation" },
-  { value: "hostel", label: "Hostel", icon: BedDouble, desc: "Hostel bed or dorm" },
-];
-
-const amenityOptions = [
-  { name: "WiFi", icon: Wifi },
-  { name: "AC", icon: Snowflake },
-  { name: "Laundry", icon: WashingMachine },
-  { name: "Kitchen", icon: UtensilsCrossed },
-  { name: "Parking", icon: Car },
-  { name: "Power Backup", icon: Zap },
-  { name: "Water Supply", icon: Droplets },
-  { name: "Furnished", icon: Sofa },
-  { name: "Security", icon: Shield },
-  { name: "CCTV", icon: Camera },
-];
 
 const STEPS = [
   { label: "Basics", icon: FileText },
@@ -68,8 +48,13 @@ export default function NewListingPage() {
 
   useEffect(() => {
     if (status === "loading") return;
-    if (!session) { router.push("/login"); return; }
-    if ((session.user as { role: string }).role !== "landlord") { router.push("/dashboard"); }
+    if (!session) {
+      router.push("/login");
+      return;
+    }
+    if (session.user.role !== "landlord") {
+      router.push("/dashboard");
+    }
   }, [session, status, router]);
 
   function updateForm(field: string, value: string) {
@@ -168,7 +153,7 @@ export default function NewListingPage() {
       amenities,
       photos: photos.map((p, i) => ({ url: p.url, order: i, alt: p.alt })),
       videos: videos.map((v) => ({ url: v.url, thumbnail: v.thumbnail, duration: v.duration })),
-      landlordId: session!.user.id,
+      landlordId: session?.user?.id ?? "",
     };
 
     try {
@@ -195,7 +180,7 @@ export default function NewListingPage() {
     );
   }
 
-  if (!session || (session.user as { role: string }).role !== "landlord") return null;
+  if (!session || session.user.role !== "landlord") return null;
 
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 py-8">
@@ -286,7 +271,7 @@ export default function NewListingPage() {
               <div>
                 <label className="text-sm font-semibold text-foreground">Property Type</label>
                 <div className="mt-3 grid grid-cols-2 gap-3">
-                  {propertyTypes.map(({ value, label, icon: Icon, desc }) => (
+                  {PROPERTY_TYPES.map(({ value, label, icon: Icon, desc }) => (
                     <button
                       key={value}
                       type="button"
@@ -478,7 +463,7 @@ export default function NewListingPage() {
               <div>
                 <label className="text-sm font-semibold text-foreground">Amenities</label>
                 <div className="mt-3 grid grid-cols-2 sm:grid-cols-5 gap-2">
-                  {amenityOptions.map(({ name, icon: Icon }) => (
+                  {AMENITY_OPTIONS.map(({ name, icon: Icon }) => (
                     <button
                       key={name}
                       type="button"

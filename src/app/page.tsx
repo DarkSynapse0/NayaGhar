@@ -1,16 +1,16 @@
 import Link from "next/link";
 import { Navbar } from "@/components/ui/Navbar";
 import { Footer } from "@/components/ui/Footer";
-import { SearchBar } from "@/components/search/SearchBar";
 import { HomeMapSection } from "@/components/map/HomeMapSection";
 import { AnimatedSection, FadeIn } from "@/components/ui/AnimatedSection";
 import { getDb } from "@/lib/db";
 import { listings } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { ListPropertyButton, RegisterButton } from "@/components/ui/ListPropertyButton";
+import { FEATURED_CITIES, PROPERTY_TYPES } from "@/lib/constants";
 import {
-  MapPin, MessageCircle, DoorOpen, Building2, Users, BedDouble,
-  BadgeCheck, Shield, Smartphone, ArrowRight, ArrowUpRight,
+  MapPin, MessageCircle,
+  BadgeCheck, Shield, Smartphone, ArrowRight,
   Search, Star, Zap,
 } from "lucide-react";
 
@@ -18,7 +18,9 @@ export default async function HomePage() {
   let allListings: (typeof listings.$inferSelect)[] = [];
   try {
     allListings = await getDb().select().from(listings).where(eq(listings.isActive, true)).limit(50);
-  } catch {}
+  } catch (error) {
+    console.error("Failed to fetch listings for home page:", error);
+  }
 
   return (
     <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] overflow-hidden">
@@ -75,7 +77,7 @@ export default async function HomePage() {
               <div className="absolute bottom-0 inset-x-0 p-5 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/80 to-transparent">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    {["Kathmandu", "Pokhara", "Lalitpur"].map((city) => (
+                    {FEATURED_CITIES.map((city) => (
                       <span key={city} className="px-3 py-1.5 rounded-full bg-white/10 text-white/70 text-xs font-medium backdrop-blur-sm">
                         {city}
                       </span>
@@ -130,13 +132,13 @@ export default async function HomePage() {
               <div className="absolute top-0 right-0 w-64 h-64 bg-[#6366F1]/5 rounded-full blur-[80px] group-hover:bg-[#6366F1]/10 transition-all duration-700" />
               <p className="text-sm text-[var(--text-muted)] font-semibold uppercase tracking-wider mb-6">Browse Properties</p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 relative z-10">
-                {[
-                  { type: "room", label: "Rooms", icon: DoorOpen, color: "from-amber-500/20 to-amber-500/5 border-amber-500/20 hover:border-amber-500/40" },
-                  { type: "apartment", label: "Apartments", icon: Building2, color: "from-blue-500/20 to-blue-500/5 border-blue-500/20 hover:border-blue-500/40" },
-                  { type: "pg", label: "PG", icon: Users, color: "from-emerald-500/20 to-emerald-500/5 border-emerald-500/20 hover:border-emerald-500/40" },
-                  { type: "hostel", label: "Hostels", icon: BedDouble, color: "from-violet-500/20 to-violet-500/5 border-violet-500/20 hover:border-violet-500/40" },
-                ].map(({ type, label, icon: Icon, color }) => (
-                  <Link key={type} href={`/search?type=${type}`} className={`rounded-xl bg-gradient-to-b ${color} border p-5 text-center transition-all duration-300 hover:-translate-y-1`}>
+                {([
+                  { ...PROPERTY_TYPES[0], color: "from-amber-500/20 to-amber-500/5 border-amber-500/20 hover:border-amber-500/40" },
+                  { ...PROPERTY_TYPES[1], color: "from-blue-500/20 to-blue-500/5 border-blue-500/20 hover:border-blue-500/40" },
+                  { ...PROPERTY_TYPES[2], color: "from-emerald-500/20 to-emerald-500/5 border-emerald-500/20 hover:border-emerald-500/40" },
+                  { ...PROPERTY_TYPES[3], color: "from-violet-500/20 to-violet-500/5 border-violet-500/20 hover:border-violet-500/40" },
+                ] as const).map(({ value, label, icon: Icon, color }) => (
+                  <Link key={value} href={`/search?type=${value}`} className={`rounded-xl bg-gradient-to-b ${color} border p-5 text-center transition-all duration-300 hover:-translate-y-1`}>
                     <Icon className="w-6 h-6 mx-auto text-white/60 mb-3" />
                     <p className="text-sm font-semibold text-white/80">{label}</p>
                   </Link>

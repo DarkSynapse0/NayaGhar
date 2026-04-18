@@ -5,7 +5,8 @@
       "Bash(yes \"n\")",
       "Bash(npm install:*)",
       "Bash(npx drizzle-kit:*)",
-      "Bash(DATABASE_URL=\"postgresql://urbannest:urbannest@localhost:5432/urban_nest\" npx drizzle-kit migrate 2>&1)"
+      "Bash(DATABASE_URL=\"postgresql://urbannest:urbannest@localhost:5432/urban_nest\" npx drizzle-kit migrate 2>&1)",
+      "Bash(npm run:*)"
     ]
   }
 }

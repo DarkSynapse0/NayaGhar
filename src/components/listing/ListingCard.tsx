@@ -3,15 +3,9 @@
 import { useRef, useEffect } from "react";
 import Link from "next/link";
 import gsap from "gsap";
-import { BadgeCheck, MapPin, ArrowUpRight, Wifi, Snowflake, Car, Shield, Zap, WashingMachine, Sofa } from "lucide-react";
+import { BadgeCheck, MapPin, ArrowUpRight } from "lucide-react";
+import { PROPERTY_TYPE_LABELS, AMENITY_ICONS, formatPrice, formatPriceValue } from "@/lib/constants";
 import type { Listing } from "@/types/listing";
-
-function formatPrice(paisa: number): string {
-  return (paisa / 100).toLocaleString();
-}
-
-const typeLabels: Record<string, string> = { room: "Room", apartment: "Apt", pg: "PG", hostel: "Hostel" };
-const amenityIcons: Record<string, typeof Wifi> = { WiFi: Wifi, AC: Snowflake, Parking: Car, Security: Shield, "Power Backup": Zap, Laundry: WashingMachine, Furnished: Sofa };
 
 export function ListingCard({ listing }: { listing: Listing }) {
   const cardRef = useRef<HTMLAnchorElement>(null);
@@ -54,7 +48,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
           {/* Top row — type pill */}
           <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
             <span className="px-2.5 py-1 rounded-lg bg-white/10 backdrop-blur-md text-[11px] font-semibold text-white/80 uppercase tracking-wide">
-              {typeLabels[listing.propertyType]}
+              {PROPERTY_TYPE_LABELS[listing.propertyType]}
             </span>
             {listing.isVerified && (
               <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-emerald-500/20 backdrop-blur-md text-[11px] font-semibold text-emerald-400">
@@ -67,7 +61,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
           {listing.deposit && (
             <div className="absolute bottom-4 left-4">
               <span className="px-2.5 py-1 rounded-lg bg-black/50 backdrop-blur-md text-[11px] font-medium text-white/60">
-                Deposit Rs. {formatPrice(listing.deposit)}
+                Deposit {formatPrice(listing.deposit)}
               </span>
             </div>
           )}
@@ -96,7 +90,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
           {amenities.length > 0 && (
             <div className="flex items-center gap-1">
               {amenities.map(([key]) => {
-                const Icon = amenityIcons[key];
+                const Icon = AMENITY_ICONS[key];
                 return Icon ? (
                   <div key={key} className="w-6 h-6 rounded-md bg-[var(--bg-hover)] flex items-center justify-center" title={key}>
                     <Icon className="w-3 h-3 text-[var(--text-muted)]" />
@@ -115,7 +109,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
           <div className="pt-2 border-t border-[var(--border)]">
             <span className="text-[11px] text-[var(--text-muted)] font-medium mr-0.5">Rs.</span>
             <span className="text-lg font-extrabold text-[var(--accent)]">
-              {formatPrice(listing.priceMonthly)}
+              {formatPriceValue(listing.priceMonthly)}
             </span>
             <span className="text-[11px] text-[var(--text-muted)] font-medium ml-0.5">/mo</span>
           </div>
