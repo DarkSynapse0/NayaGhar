@@ -9,6 +9,7 @@ interface ListingMarkersProps {
   listings: Listing[];
   zoom: number;
   onListingClick?: (listing: Listing) => void;
+  onClusterClick?: (longitude: number, latitude: number, expansionZoom: number) => void;
 }
 
 function formatPrice(paisa: number): string {
@@ -22,6 +23,7 @@ export function ListingMarkers({
   listings,
   zoom,
   onListingClick,
+  onClusterClick,
 }: ListingMarkersProps) {
   const points = useMemo(
     () =>
@@ -54,7 +56,7 @@ export function ListingMarkers({
     ];
   }, [points]);
 
-  const { clusters } = useSupercluster({
+  const { clusters, supercluster } = useSupercluster({
     points,
     bounds,
     zoom,
@@ -70,32 +72,39 @@ export function ListingMarkers({
         const pointCount = (props.point_count as number) || 0;
 
         if (isCluster) {
-          const size = Math.min(40 + (pointCount / listings.length) * 30, 70);
+          const size = Math.min(42 + (pointCount / listings.length) * 30, 72);
           return (
             <Marker key={`cluster-${cluster.id}`} longitude={lng} latitude={lat}>
-              <div
-                className="rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs shadow-md border-2 border-white"
+              <button
+                type="button"
+                aria-label={`${pointCount} listings, zoom in`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!supercluster || !onClusterClick) return;
+                  const expansionZoom = Math.min(
+                    supercluster.getClusterExpansionZoom(cluster.id as number),
+                    18
+                  );
+                  onClusterClick(lng, lat, expansionZoom);
+                }}
+                className="rounded-full bg-[var(--brick)] text-white flex items-center justify-center font-display font-bold text-sm shadow-md border-2 border-[var(--panel)] hover:bg-[var(--brick-ink)] transition-colors"
                 style={{ width: size, height: size }}
               >
                 {pointCount}
-              </div>
+              </button>
             </Marker>
           );
         }
 
         const listing = props.listing as Listing;
         return (
-          <Marker
-            key={`listing-${listing.id}`}
-            longitude={lng}
-            latitude={lat}
-            anchor="bottom"
-          >
+          <Marker key={`listing-${listing.id}`} longitude={lng} latitude={lat} anchor="bottom">
             <button
+              type="button"
               onClick={(e) => { e.stopPropagation(); onListingClick?.(listing); }}
-              className="bg-white text-primary font-bold text-xs px-2 py-1 rounded-lg shadow-md border border-border hover:bg-primary hover:text-white transition-colors whitespace-nowrap"
+              className="price-display bg-[var(--panel)] text-[var(--brick)] font-bold text-xs px-2.5 py-1.5 rounded-[var(--radius)] shadow-md border border-[var(--ink)] hover:bg-[var(--brick)] hover:text-[var(--panel)] transition-colors whitespace-nowrap"
             >
-              {formatPrice(listing.priceMonthly)}
+              Rs {formatPrice(listing.priceMonthly)}
             </button>
           </Marker>
         );

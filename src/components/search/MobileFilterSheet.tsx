@@ -109,7 +109,7 @@ export function MobileFilterSheet({ defaultQuery, defaultCity }: { defaultQuery:
       {/* Floating filter button */}
       <button
         onClick={() => setOpen(true)}
-        className="lg:hidden fixed bottom-6 right-6 z-40 flex items-center gap-2 h-12 px-5 rounded-full bg-[var(--accent)] text-white text-sm font-semibold shadow-warm-3 active:scale-[0.95] transition-transform"
+        className="lg:hidden fixed bottom-6 right-6 z-40 flex items-center gap-2 h-12 px-5 rounded-[var(--radius)] bg-[var(--brick)] text-white font-display text-sm font-bold shadow-block active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-transform"
       >
         <SlidersHorizontal className="w-4 h-4" />
         Filters
@@ -123,23 +123,23 @@ export function MobileFilterSheet({ defaultQuery, defaultCity }: { defaultQuery:
             className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-250 ${closing ? "opacity-0" : "animate-fade-in"}`}
             onClick={close}
           />
-          <div className={`absolute bottom-0 inset-x-0 max-h-[85vh] bg-[var(--bg-card)] border-t border-[var(--border)] rounded-t-2xl flex flex-col transition-transform duration-300 ease-out ${closing ? "translate-y-full" : "animate-slide-in-up"}`}>
+          <div className={`absolute bottom-0 inset-x-0 max-h-[85vh] bg-[var(--panel)] border-t-2 border-[var(--ink)] rounded-t-2xl flex flex-col transition-transform duration-300 ease-out ${closing ? "translate-y-full" : "animate-slide-in-up"}`}>
             {/* Handle */}
             <div className="flex items-center justify-center pt-3 pb-1">
-              <div className="w-10 h-1 rounded-full bg-white/10" />
+              <div className="w-10 h-1 rounded-full bg-[var(--ink)]/20" />
             </div>
 
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-3 border-b border-[var(--border)]">
-              <h3 className="text-base font-bold">Filters</h3>
+            <div className="flex items-center justify-between px-5 py-3 border-b border-[var(--line)]">
+              <h3 className="font-display text-base font-bold text-[var(--ink)]">Filters</h3>
               <div className="flex items-center gap-3">
                 {hasLocalFilters && (
-                  <button onClick={clearAll} className="text-xs font-semibold text-red-400/60 hover:text-red-400 transition-colors">
+                  <button onClick={clearAll} className="text-xs font-semibold text-[var(--danger)] hover:opacity-80 transition-opacity">
                     Clear all
                   </button>
                 )}
-                <button onClick={close} className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[var(--bg-hover)]">
-                  <X className="w-4 h-4 text-[var(--text-secondary)]" />
+                <button onClick={close} className="w-8 h-8 rounded-[var(--radius)] flex items-center justify-center hover:bg-[var(--paper-2)]">
+                  <X className="w-4 h-4 text-[var(--ink-2)]" />
                 </button>
               </div>
             </div>

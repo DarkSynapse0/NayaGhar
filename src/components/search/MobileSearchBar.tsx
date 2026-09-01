@@ -23,13 +23,13 @@ export function MobileSearchBar({ defaultQuery = "", defaultCity = "" }: { defau
 
   return (
     <form onSubmit={handleSearch} className="relative">
-      <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
+      <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ink-3)]" />
       <input
         type="text"
-        placeholder="Search by title, area, or keyword..."
+        placeholder="Search by area, landmark, or keyword"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="w-full h-12 pl-11 pr-4 rounded-xl bg-[var(--bg-card)] border border-[var(--border)] text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20 transition-all"
+        className="w-full h-12 pl-11 pr-4 rounded-[var(--radius)] bg-[var(--panel)] border border-[var(--ink-3)] text-sm text-[var(--ink)] placeholder:text-[var(--ink-3)] focus:outline-none focus:border-[var(--brick)] focus:ring-2 focus:ring-[var(--ring)] transition-colors"
         autoComplete="off"
       />
     </form>

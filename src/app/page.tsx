@@ -2,225 +2,274 @@ import Link from "next/link";
 import { Navbar } from "@/components/ui/Navbar";
 import { Footer } from "@/components/ui/Footer";
 import { HomeMapSection } from "@/components/map/HomeMapSection";
-import { AnimatedSection, FadeIn } from "@/components/ui/AnimatedSection";
-import { getDb } from "@/lib/db";
+import { FadeIn } from "@/components/ui/AnimatedSection";
+import { ListingCard } from "@/components/listing/ListingCard";
 import { listings } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
-import { ListPropertyButton, RegisterButton } from "@/components/ui/ListPropertyButton";
-import { FEATURED_CITIES, PROPERTY_TYPES } from "@/lib/constants";
-import {
-  MapPin, MessageCircle,
-  BadgeCheck, Shield, Smartphone, ArrowRight,
-  Search, Star, Zap,
-} from "lucide-react";
+import { withAnon } from "@/lib/db/rls";
+import { desc, eq } from "drizzle-orm";
+import { RegisterButton } from "@/components/ui/ListPropertyButton";
+import { CITIES, FEATURED_CITIES, PROPERTY_TYPES } from "@/lib/constants";
+import { Search, ArrowRight, BadgeCheck, MessageCircle, MapPin } from "lucide-react";
 
 export default async function HomePage() {
   let allListings: (typeof listings.$inferSelect)[] = [];
   try {
-    allListings = await getDb().select().from(listings).where(eq(listings.isActive, true)).limit(50);
+    allListings = await withAnon(async (tx) =>
+      tx
+        .select()
+        .from(listings)
+        .where(eq(listings.isActive, true))
+        .orderBy(desc(listings.createdAt))
+        .limit(50)
+    );
   } catch (error) {
     console.error("Failed to fetch listings for home page:", error);
   }
 
+  const verifiedCount = allListings.filter((l) => l.isVerified).length;
+  const cityCount = new Set(allListings.map((l) => l.city)).size || CITIES.length;
+  const recent = allListings.slice(0, 6);
+
+  const steps = [
+    {
+      n: "01",
+      title: "Search your area",
+      body: "Filter by city, price and property type, or browse the map near your college or workplace.",
+    },
+    {
+      n: "02",
+      title: "Check the verified badge",
+      body: "Verified listings have confirmed photos and a phone-verified landlord. Read reviews from real tenants.",
+    },
+    {
+      n: "03",
+      title: "Message on WhatsApp",
+      body: "Contact the landlord directly, no account or app download needed. Ask, visit, and decide.",
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] overflow-hidden">
+    <div className="min-h-screen bg-[var(--paper)] text-[var(--ink)]">
       <Navbar />
       <div className="h-14" />
 
-      {/* Hero */}
-      <section className="relative pt-12 pb-20 sm:pt-20 sm:pb-28 px-5 sm:px-8">
-        {/* Glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[#6366F1]/8 rounded-full blur-[120px] pointer-events-none" />
-
-        <div className="relative mx-auto max-w-5xl">
+      {/* ── Hero ─────────────────────────────────────────────── */}
+      <section className="relative border-b-2 border-[var(--ink)] dot-grid">
+        <div className="mx-auto max-w-6xl px-5 sm:px-8 pt-14 pb-16 sm:pt-20 sm:pb-20">
           <FadeIn>
-            <p className="text-sm text-[#6366F1] font-semibold tracking-wider uppercase mb-6">
-              Housing Platform for Nepal
-            </p>
+            <p className="label text-[var(--brick)]">Verified housing · Nepal</p>
           </FadeIn>
-          <FadeIn delay={0.1}>
-            <h1 className="text-5xl sm:text-7xl lg:text-[88px] font-extrabold leading-[0.95] tracking-tight">
-              Find Your<br />
-              <span className="bg-gradient-to-r from-[#6366F1] via-[#818CF8] to-[#059669] bg-clip-text text-transparent">
-                Home
-              </span>{" "}
-              in the City
+          <FadeIn delay={0.05}>
+            <h1 className="mt-5 font-display font-black leading-[0.95] tracking-tight text-[clamp(2.6rem,7vw,5.25rem)] max-w-4xl">
+              Find a room
+              <br />
+              you can trust.
             </h1>
           </FadeIn>
-          <FadeIn delay={0.2}>
-            <p className="mt-6 text-lg sm:text-xl text-[var(--text-secondary)] max-w-xl leading-relaxed">
-              Safe, affordable, and verified housing for students and young professionals moving to cities across Nepal.
+          <FadeIn delay={0.1}>
+            <p className="mt-6 text-lg text-[var(--ink-2)] max-w-xl leading-relaxed">
+              Real photos, honest prices, phone-verified landlords. Rooms,
+              apartments, PG and hostels for students and young professionals
+              moving to the city.
             </p>
           </FadeIn>
-          <FadeIn delay={0.3}>
-            <div className="mt-10 flex flex-col sm:flex-row gap-4">
-              <Link href="/search" className="inline-flex items-center justify-center gap-2 h-12 px-7 rounded-full bg-[#6366F1] text-[var(--text)] font-semibold hover:bg-[#4F46E5] transition-all duration-300 active:scale-[0.97]">
-                <Search className="w-4 h-4" />
-                Search Properties
-              </Link>
-              <ListPropertyButton className="inline-flex items-center justify-center gap-2 h-12 px-7 rounded-full border border-white/10 text-[var(--text)] font-semibold hover:bg-[var(--bg-hover)] transition-all duration-300" />
+
+          {/* No-JS search form — works on any connection */}
+          <FadeIn delay={0.15}>
+            <form
+              action="/search"
+              className="mt-9 max-w-2xl bg-[var(--panel)] border border-[var(--ink)] rounded-[var(--radius-lg)] shadow-block p-2 flex flex-col sm:flex-row gap-2"
+            >
+              <div className="flex items-center gap-2 flex-1 px-3">
+                <Search className="w-4 h-4 text-[var(--ink-3)] shrink-0" />
+                <input
+                  name="q"
+                  type="text"
+                  placeholder="Area, landmark, or keyword"
+                  aria-label="Search rooms"
+                  className="h-11 w-full bg-transparent text-sm text-[var(--ink)] placeholder:text-[var(--ink-3)] focus:outline-none"
+                />
+              </div>
+              <div className="flex gap-2">
+                <select
+                  name="city"
+                  aria-label="City"
+                  defaultValue=""
+                  className="h-11 rounded-[var(--radius)] bg-[var(--paper-2)] border border-[var(--line)] px-3 text-sm text-[var(--ink)] focus:outline-none focus:border-[var(--brick)]"
+                >
+                  <option value="">All cities</option>
+                  {CITIES.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+                <button
+                  type="submit"
+                  className="h-11 px-5 rounded-[var(--radius)] bg-[var(--brick)] text-[var(--panel)] font-display font-bold text-sm hover:bg-[var(--brick-ink)] transition-colors whitespace-nowrap"
+                >
+                  Search
+                </button>
+              </div>
+            </form>
+          </FadeIn>
+
+          {/* Property type directory */}
+          <FadeIn delay={0.2}>
+            <div className="mt-6 flex flex-wrap items-center gap-2">
+              <span className="label text-[var(--ink-3)] mr-1">Browse</span>
+              {PROPERTY_TYPES.map(({ value, label, icon: Icon }) => (
+                <Link
+                  key={value}
+                  href={`/search?type=${value}`}
+                  className="inline-flex items-center gap-1.5 h-9 px-3 rounded-[var(--radius)] bg-[var(--panel)] border border-[var(--line)] text-[13px] font-semibold text-[var(--ink-2)] hover:border-[var(--ink)] hover:text-[var(--ink)] transition-colors"
+                >
+                  <Icon className="w-4 h-4" />
+                  {label}
+                </Link>
+              ))}
             </div>
           </FadeIn>
         </div>
-      </section>
-      
 
-      {/* Map Section */}
-      <section className="px-5 sm:px-8 pb-20 sm:pb-28">
-        <FadeIn>
-          <div className="mx-auto max-w-6xl">
-            <div className="rounded-2xl overflow-hidden border border-white/10 relative">
-              <div className="h-[400px] sm:h-[500px]">
-                <HomeMapSection listings={allListings} />
+        {/* Trust strip */}
+        <div className="border-t-2 border-[var(--ink)] bg-[var(--panel)]">
+          <div className="mx-auto max-w-6xl px-5 sm:px-8 grid grid-cols-2 sm:grid-cols-4 divide-x divide-[var(--line)]">
+            {[
+              { value: `${allListings.length}`, label: "Live listings" },
+              { value: `${verifiedCount}`, label: "Verified" },
+              { value: `${cityCount}`, label: "Cities" },
+              { value: "Free", label: "For landlords" },
+            ].map(({ value, label }, i) => (
+              <div key={label} className={`py-6 ${i === 0 ? "" : "pl-5"}`}>
+                <p className="price-display text-3xl font-extrabold text-[var(--ink)]">{value}</p>
+                <p className="label text-[var(--ink-3)] mt-1.5">{label}</p>
               </div>
-              {/* Overlay */}
-              <div className="absolute bottom-0 inset-x-0 p-5 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/80 to-transparent">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    {FEATURED_CITIES.map((city) => (
-                      <span key={city} className="px-3 py-1.5 rounded-full bg-white/10 text-white/70 text-xs font-medium backdrop-blur-sm">
-                        {city}
-                      </span>
-                    ))}
-                    <span className="text-[var(--text-muted)] text-sm hidden sm:inline">{allListings.length} listings</span>
-                  </div>
-                  <Link href="/search" className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-white text-[#0A0A0A] text-sm font-semibold hover:bg-white/90 transition-colors">
-                    Explore <ArrowRight className="w-3.5 h-3.5" />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Map ─────────────────────────────────────────────── */}
+      <section className="border-b-2 border-[var(--ink)]">
+        <div className="mx-auto max-w-6xl px-5 sm:px-8 py-14 sm:py-16">
+          <div className="flex items-end justify-between gap-4 mb-6">
+            <div>
+              <p className="label text-[var(--geo)]">On the map</p>
+              <h2 className="mt-2 font-display text-2xl sm:text-3xl font-extrabold tracking-tight">
+                See what&apos;s near you
+              </h2>
+            </div>
+            <Link
+              href="/search"
+              className="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--ink)] hover:text-[var(--brick)] transition-colors"
+            >
+              Open full map <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          <div className="rounded-[var(--radius-lg)] overflow-hidden border border-[var(--ink)] relative">
+            <div className="h-[380px] sm:h-[480px]">
+              <HomeMapSection listings={allListings} />
+            </div>
+            <div className="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-[var(--paper)] via-[var(--paper)]/70 to-transparent pointer-events-none">
+              <div className="flex items-center gap-2 flex-wrap pointer-events-auto">
+                {FEATURED_CITIES.map((city) => (
+                  <Link
+                    key={city}
+                    href={`/search?city=${city}`}
+                    className="label px-2.5 py-1.5 rounded-[var(--radius-sm)] bg-[var(--panel)] border border-[var(--ink)] text-[var(--ink)] hover:bg-[var(--brick)] hover:text-[var(--panel)] hover:border-[var(--brick)] transition-colors"
+                  >
+                    {city}
                   </Link>
-                </div>
+                ))}
               </div>
             </div>
           </div>
-        </FadeIn>
+        </div>
       </section>
 
-      {/* Stats */}
-      <section className="px-5 sm:px-8 pb-20 sm:pb-28">
-        <FadeIn>
-          <div className="mx-auto max-w-6xl rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-8 sm:p-12">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 sm:gap-4">
-              {[
-                { value: `${allListings.length}+`, label: "Active Listings" },
-                { value: "5", label: "Cities" },
-                { value: "24/7", label: "WhatsApp Support" },
-                { value: "Free", label: "For Landlords" },
-              ].map(({ value, label }) => (
-                <div key={label} className="text-center">
-                  <p className="text-3xl sm:text-4xl font-extrabold text-[var(--text)] price-display">{value}</p>
-                  <p className="text-sm text-[var(--text-muted)] mt-2">{label}</p>
-                </div>
+      {/* ── Available now ───────────────────────────────────── */}
+      {recent.length > 0 && (
+        <section className="border-b-2 border-[var(--ink)]">
+          <div className="mx-auto max-w-6xl px-5 sm:px-8 py-14 sm:py-16">
+            <div className="flex items-end justify-between gap-4 mb-6">
+              <div>
+                <p className="label text-[var(--brick)]">Available now</p>
+                <h2 className="mt-2 font-display text-2xl sm:text-3xl font-extrabold tracking-tight">
+                  Recently listed rooms
+                </h2>
+              </div>
+              <Link
+                href="/search"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--ink)] hover:text-[var(--brick)] transition-colors"
+              >
+                See all <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {recent.map((listing) => (
+                <ListingCard key={listing.id} listing={listing} />
               ))}
             </div>
           </div>
-        </FadeIn>
-      </section>
+        </section>
+      )}
 
-      {/* Bento Grid */}
-      <section className="px-5 sm:px-8 pb-20 sm:pb-28">
-        <div className="mx-auto max-w-6xl">
-          <FadeIn>
-            <p className="text-sm text-[#6366F1] font-semibold tracking-wider uppercase mb-4">Features</p>
-            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight mb-12">
-              Everything you need,<br />
-              <span className="text-[var(--text-muted)]">nothing you don&apos;t.</span>
-            </h2>
-          </FadeIn>
-
-          <AnimatedSection className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" stagger={0.08}>
-            {/* Property types — large */}
-            <div className="lg:col-span-2 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] p-8 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[#6366F1]/5 rounded-full blur-[80px] group-hover:bg-[#6366F1]/10 transition-all duration-700" />
-              <p className="text-sm text-[var(--text-muted)] font-semibold uppercase tracking-wider mb-6">Browse Properties</p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 relative z-10">
-                {([
-                  { ...PROPERTY_TYPES[0], color: "from-amber-500/20 to-amber-500/5 border-amber-500/20 hover:border-amber-500/40" },
-                  { ...PROPERTY_TYPES[1], color: "from-blue-500/20 to-blue-500/5 border-blue-500/20 hover:border-blue-500/40" },
-                  { ...PROPERTY_TYPES[2], color: "from-emerald-500/20 to-emerald-500/5 border-emerald-500/20 hover:border-emerald-500/40" },
-                  { ...PROPERTY_TYPES[3], color: "from-violet-500/20 to-violet-500/5 border-violet-500/20 hover:border-violet-500/40" },
-                ] as const).map(({ value, label, icon: Icon, color }) => (
-                  <Link key={value} href={`/search?type=${value}`} className={`rounded-xl bg-gradient-to-b ${color} border p-5 text-center transition-all duration-300 hover:-translate-y-1`}>
-                    <Icon className="w-6 h-6 mx-auto text-white/60 mb-3" />
-                    <p className="text-sm font-semibold text-white/80">{label}</p>
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            {/* WhatsApp */}
-            <div className="rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] p-8 flex flex-col justify-between relative overflow-hidden group">
-              <div className="absolute bottom-0 right-0 w-40 h-40 bg-[#25D366]/10 rounded-full blur-[60px] group-hover:bg-[#25D366]/15 transition-all duration-700" />
-              <MessageCircle className="w-8 h-8 text-[#25D366] mb-6" />
-              <div>
-                <p className="text-lg font-bold text-[var(--text)] mb-2">WhatsApp Connect</p>
-                <p className="text-sm text-[var(--text-muted)] leading-relaxed">Message verified landlords directly. No app downloads needed.</p>
-              </div>
-            </div>
-
-            {/* Trust */}
-            <div className="rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] p-8 flex flex-col justify-between relative overflow-hidden">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-[#6366F1]/10 flex items-center justify-center"><BadgeCheck className="w-5 h-5 text-[#6366F1]" /></div>
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center"><Shield className="w-5 h-5 text-emerald-500" /></div>
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center"><Star className="w-5 h-5 text-amber-500" /></div>
-              </div>
-              <div>
-                <p className="text-lg font-bold text-[var(--text)] mb-2">Trust & Safety</p>
-                <p className="text-sm text-[var(--text-muted)] leading-relaxed">Verified listings, community reviews, phone-verified landlords.</p>
-              </div>
-            </div>
-
-            {/* Map search */}
-            <div className="rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] p-8 flex flex-col justify-between relative overflow-hidden group">
-              <div className="absolute top-0 left-0 w-40 h-40 bg-violet-500/5 rounded-full blur-[60px] group-hover:bg-violet-500/10 transition-all duration-700" />
-              <MapPin className="w-8 h-8 text-violet-400 mb-6" />
-              <div>
-                <p className="text-lg font-bold text-[var(--text)] mb-2">Map-First Search</p>
-                <p className="text-sm text-[var(--text-muted)] leading-relaxed">See listings near your college, workplace, or transit hubs on an interactive map.</p>
-              </div>
-            </div>
-
-            {/* Low bandwidth */}
-            <div className="rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] p-8 flex flex-col justify-between">
-              <Zap className="w-8 h-8 text-amber-400 mb-6" />
-              <div>
-                <p className="text-lg font-bold text-[var(--text)] mb-2">Lightning Fast</p>
-                <p className="text-sm text-[var(--text-muted)] leading-relaxed">Optimized for 2G connections. Works on any device, anywhere in Nepal.</p>
-              </div>
-            </div>
-          </AnimatedSection>
+      {/* ── How it works ────────────────────────────────────── */}
+      <section className="border-b-2 border-[var(--ink)]">
+        <div className="mx-auto max-w-6xl px-5 sm:px-8 py-14 sm:py-16">
+          <p className="label text-[var(--ink-3)]">How it works</p>
+          <h2 className="mt-2 font-display text-2xl sm:text-3xl font-extrabold tracking-tight max-w-lg">
+            Three steps to a place that&apos;s actually real
+          </h2>
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 border border-[var(--ink)] rounded-[var(--radius-lg)] overflow-hidden divide-y md:divide-y-0 md:divide-x divide-[var(--ink)]">
+            {steps.map(({ n, title, body }, i) => {
+              const Icon = [Search, BadgeCheck, MessageCircle][i];
+              return (
+                <div key={n} className="p-6 bg-[var(--panel)]">
+                  <div className="flex items-center justify-between">
+                    <span className="price-display text-4xl font-black text-[var(--brick)]">{n}</span>
+                    <Icon className="w-6 h-6 text-[var(--ink-3)]" />
+                  </div>
+                  <h3 className="mt-4 font-display text-lg font-bold text-[var(--ink)]">{title}</h3>
+                  <p className="mt-2 text-sm text-[var(--ink-2)] leading-relaxed">{body}</p>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="px-5 sm:px-8 pb-20 sm:pb-28">
-        <FadeIn>
-          <div className="mx-auto max-w-6xl rounded-2xl border border-[var(--border)] bg-gradient-to-br from-[#6366F1]/10 via-[#111111] to-[#059669]/10 p-10 sm:p-16 text-center relative overflow-hidden">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-[#6366F1]/5 rounded-full blur-[100px]" />
-            <div className="relative z-10">
-              <p className="text-sm text-[#6366F1] font-semibold tracking-wider uppercase mb-4">For Landlords</p>
-              <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">
-                List your property,<br />reach thousands.
-              </h2>
-              <p className="text-[var(--text-muted)] max-w-md mx-auto mb-8">
-                Connect with reliable students and professionals looking for housing across Nepal. Completely free.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <RegisterButton className="inline-flex items-center justify-center gap-2 h-12 px-8 rounded-full bg-[#6366F1] text-[var(--text)] font-semibold hover:bg-[#4F46E5] transition-all active:scale-[0.97]" label="Register Now" />
-              </div>
-              <div className="mt-8 flex items-center justify-center gap-6 flex-wrap">
-                {[
-                  { icon: BadgeCheck, text: "100% free" },
-                  { icon: Shield, text: "Verified tenants" },
-                  { icon: Smartphone, text: "WhatsApp integration" },
-                ].map(({ icon: Icon, text }) => (
-                  <div key={text} className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
-                    <Icon className="w-4 h-4 text-[#6366F1]" />{text}
-                  </div>
-                ))}
-              </div>
+      {/* ── Landlord CTA (brick block) ──────────────────────── */}
+      <section className="bg-[var(--brick)] text-[var(--panel)]">
+        <div className="mx-auto max-w-6xl px-5 sm:px-8 py-16 sm:py-20">
+          <div className="max-w-2xl">
+            <p className="label text-[var(--panel)]/80">For landlords</p>
+            <h2 className="mt-3 font-display text-3xl sm:text-4xl font-black tracking-tight leading-tight">
+              List your property, reach thousands of renters.
+            </h2>
+            <p className="mt-4 text-[var(--panel)]/85 leading-relaxed max-w-md">
+              Connect with reliable students and professionals looking for housing
+              across Nepal. Listing is completely free.
+            </p>
+            <div className="mt-8 flex flex-col sm:flex-row gap-3">
+              <RegisterButton
+                className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-[var(--radius)] bg-[var(--panel)] text-[var(--brick)] font-display font-bold hover:bg-[var(--paper)] transition-colors"
+                label="List for free"
+              />
+              <Link
+                href="/search"
+                className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-[var(--radius)] border border-[var(--panel)]/60 text-[var(--panel)] font-display font-bold hover:bg-[var(--panel)]/10 transition-colors"
+              >
+                Browse listings
+              </Link>
+            </div>
+            <div className="mt-8 flex items-center gap-5 flex-wrap text-sm text-[var(--panel)]/85">
+              <span className="inline-flex items-center gap-2"><BadgeCheck className="w-4 h-4" /> 100% free</span>
+              <span className="inline-flex items-center gap-2"><MessageCircle className="w-4 h-4" /> WhatsApp inquiries</span>
+              <span className="inline-flex items-center gap-2"><MapPin className="w-4 h-4" /> Map placement</span>
             </div>
           </div>
-        </FadeIn>
+        </div>
       </section>
 
       <Footer />

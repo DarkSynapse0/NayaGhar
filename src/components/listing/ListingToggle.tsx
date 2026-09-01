@@ -46,7 +46,7 @@ export function ListingToggle({ listingId, initialActive }: { listingId: string;
         {/* Toggle track */}
         <div
           className={`relative w-11 h-6 rounded-full transition-colors duration-300 ${
-            active ? "bg-emerald-500" : "bg-red-500/70"
+            active ? "bg-[var(--verified)]" : "bg-[var(--danger)]"
           }`}
         >
           {/* Toggle thumb */}
@@ -58,15 +58,15 @@ export function ListingToggle({ listingId, initialActive }: { listingId: string;
         </div>
         {/* Label */}
         <span
-          className={`text-sm font-medium transition-colors duration-300 ${
-            active ? "text-emerald-400" : "text-red-400/70"
+          className={`text-sm font-semibold transition-colors duration-300 ${
+            active ? "text-[var(--verified)]" : "text-[var(--danger)]"
           }`}
         >
           {active ? "Available" : "Rented"}
         </span>
       </button>
       {error && (
-        <p className="text-[11px] text-red-400 animate-fade-in">Failed to update</p>
+        <p className="text-[11px] text-[var(--danger)] animate-fade-in">Failed to update</p>
       )}
     </div>
   );

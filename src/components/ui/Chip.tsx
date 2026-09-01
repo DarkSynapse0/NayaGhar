@@ -7,14 +7,15 @@ interface ChipProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: React.ReactNode;
 }
 
+// Filter/toggle chip. Selected = brick fill; idle = paper with ink outline.
 const Chip = forwardRef<HTMLButtonElement, ChipProps>(
   ({ selected, icon, children, className = "", ...props }, ref) => (
     <button
       ref={ref}
-      className={`inline-flex items-center gap-1.5 h-8 px-3 rounded-lg label-large transition-all duration-200 border ${
+      className={`inline-flex items-center gap-1.5 h-9 px-3.5 rounded-[var(--radius)] text-[13px] font-semibold transition-colors duration-150 border ${
         selected
-          ? "bg-secondary-container text-on-secondary-container border-transparent elevation-1"
-          : "bg-transparent text-muted-foreground border-outline-variant hover:bg-surface-container-high"
+          ? "bg-[var(--brick)] text-[var(--panel)] border-[var(--brick)]"
+          : "bg-[var(--panel)] text-[var(--ink-2)] border-[var(--line)] hover:border-[var(--ink)] hover:text-[var(--ink)]"
       } ${className}`}
       {...props}
     >

@@ -1,10 +1,12 @@
 import { HTMLAttributes, forwardRef } from "react";
 
+// Paper panel — full border, no drop shadow. The card replacement.
+// Nested panels are banned (see DESIGN.md).
 const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className = "", ...props }, ref) => (
     <div
       ref={ref}
-      className={`rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] transition-all duration-300 ${className}`}
+      className={`rounded-[var(--radius-lg)] bg-[var(--panel)] border border-[var(--line)] ${className}`}
       {...props}
     />
   )

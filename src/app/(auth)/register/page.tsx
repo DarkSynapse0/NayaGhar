@@ -6,9 +6,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { Home, Building2 } from "lucide-react";
+
+type Role = "tenant" | "landlord";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const [role, setRole] = useState<Role>("tenant");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -37,7 +41,7 @@ export default function RegisterPage() {
       phone: form.get("phone"),
       email: form.get("email") || undefined,
       password,
-      role: "landlord",
+      role,
     };
 
     try {
@@ -54,13 +58,18 @@ export default function RegisterPage() {
         return;
       }
 
-      const result = await signIn("credentials", { phone: body.phone, password: body.password, redirect: false });
+      const result = await signIn("credentials", {
+        phone: body.phone,
+        password: body.password,
+        redirect: false,
+      });
       if (result?.error) {
         router.push("/login");
         return;
       }
 
-      router.push("/dashboard");
+      // Tenants want to browse listings; landlords want to manage their dashboard.
+      router.push(role === "tenant" ? "/search" : "/dashboard");
       router.refresh();
     } catch (error) {
       console.error("Registration failed:", error);
@@ -72,8 +81,28 @@ export default function RegisterPage() {
 
   return (
     <div className="rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] p-6">
-      <h1 className="text-xl font-bold text-center">Landlord Registration</h1>
-      <p className="text-sm text-[var(--text-muted)] text-center mt-1">Create an account to list your properties</p>
+      <h1 className="text-xl font-bold text-center">Create Account</h1>
+      <p className="text-sm text-[var(--text-muted)] text-center mt-1">
+        Join NayaGhar to find or list a home
+      </p>
+
+      {/* Role selector */}
+      <div className="mt-6 grid grid-cols-2 gap-2 p-1 rounded-xl bg-[var(--bg-elevated)] border border-[var(--border)]">
+        <RoleTab
+          active={role === "tenant"}
+          onClick={() => setRole("tenant")}
+          icon={Home}
+          label="I'm a Tenant"
+          desc="Find a home"
+        />
+        <RoleTab
+          active={role === "landlord"}
+          onClick={() => setRole("landlord")}
+          icon={Building2}
+          label="I'm a Landlord"
+          desc="List property"
+        />
+      </div>
 
       {error && (
         <div className="mt-4 rounded-xl bg-[var(--red)]/10 border border-[var(--red)]/20 p-3 text-sm text-[var(--red)] text-center animate-shake">
@@ -81,14 +110,14 @@ export default function RegisterPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+      <form onSubmit={handleSubmit} className="mt-5 space-y-4">
         <Input name="name" label="Full Name" placeholder="Your name" required />
         <Input name="phone" label="Phone Number" type="tel" placeholder="+977 98XXXXXXXX" required />
         <Input name="email" label="Email (optional)" type="email" placeholder="you@example.com" />
         <Input name="password" label="Password" type="password" placeholder="At least 6 characters" required />
         <Input name="confirmPassword" label="Confirm Password" type="password" placeholder="Repeat your password" required />
         <Button size="lg" className="w-full" disabled={submitting}>
-          {submitting ? "Creating account..." : "Register as Landlord"}
+          {submitting ? "Creating account..." : `Register as ${role === "tenant" ? "Tenant" : "Landlord"}`}
         </Button>
       </form>
 
@@ -99,5 +128,39 @@ export default function RegisterPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+function RoleTab({
+  active,
+  onClick,
+  icon: Icon,
+  label,
+  desc,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: typeof Home;
+  label: string;
+  desc: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex flex-col items-start gap-1 p-3 rounded-lg transition-all ${
+        active
+          ? "bg-[var(--bg-card)] border border-[var(--accent)] shadow-sm"
+          : "border border-transparent text-[var(--text-muted)] hover:text-[var(--text)]"
+      }`}
+    >
+      <div className="flex items-center gap-2">
+        <Icon className={`w-4 h-4 ${active ? "text-[var(--accent)]" : ""}`} />
+        <span className={`text-sm font-semibold ${active ? "text-[var(--text)]" : ""}`}>
+          {label}
+        </span>
+      </div>
+      <span className="text-[11px] text-[var(--text-muted)]">{desc}</span>
+    </button>
   );
 }

@@ -54,6 +54,7 @@ export function ListingDetailMap({
     <MapView
       listings={marker}
       initialCenter={{ lat: latitude, lng: longitude, zoom: 15 }}
+      selectable={false}
     />
   );
 }

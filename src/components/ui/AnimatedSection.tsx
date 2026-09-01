@@ -18,7 +18,12 @@ export function AnimatedSection({ children, className = "", stagger = 0.1, delay
     if (!el) return;
 
     const childEls = el.children;
-    gsap.set(childEls, { opacity: 0, y: 30 });
+    // Honor reduced-motion: show final state immediately, no animation.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set(childEls, { opacity: 1, y: 0 });
+      return;
+    }
+    gsap.set(childEls, { opacity: 0, y: 20 });
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -26,7 +31,7 @@ export function AnimatedSection({ children, className = "", stagger = 0.1, delay
           gsap.to(childEls, {
             opacity: 1,
             y: 0,
-            duration: 0.7,
+            duration: 0.5,
             stagger,
             delay,
             ease: "power3.out",
@@ -50,12 +55,16 @@ export function FadeIn({ children, className = "", delay = 0 }: { children: Reac
     const el = ref.current;
     if (!el) return;
 
-    gsap.set(el, { opacity: 0, y: 24 });
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set(el, { opacity: 1, y: 0 });
+      return;
+    }
+    gsap.set(el, { opacity: 0, y: 16 });
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          gsap.to(el, { opacity: 1, y: 0, duration: 0.7, delay, ease: "power3.out" });
+          gsap.to(el, { opacity: 1, y: 0, duration: 0.5, delay, ease: "power3.out" });
           observer.disconnect();
         }
       },

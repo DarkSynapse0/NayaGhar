@@ -1,27 +1,30 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Archivo, Hind } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SessionProvider } from "@/components/providers/SessionProvider";
 import { LanguageProvider } from "@/components/providers/LanguageProvider";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+// Display: signage-grade grotesque for headlines, prices, labels (Latin).
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
   display: "swap",
 });
 
-const jetbrains = JetBrains_Mono({
-  variable: "--font-jetbrains",
-  subsets: ["latin"],
+// Body/UI: engineered for Devanagari + Latin legibility on low-DPI screens.
+const hind = Hind({
+  variable: "--font-hind",
+  subsets: ["latin", "devanagari"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "NayaGhar - Find Your Home in the City",
+  title: "NayaGhar — verified rooms for the city",
   description:
-    "AI-powered housing platform connecting rural-to-urban migrants with safe, affordable, and verified housing.",
+    "Find safe, affordable, verified rooms, apartments, PG and hostels across Nepal. Real photos, honest prices, one-tap WhatsApp contact.",
 };
 
 export default function RootLayout({
@@ -30,8 +33,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrains.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-[#0A0A0A] text-white">
+    <html lang="en" className={`${archivo.variable} ${hind.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col">
         <SessionProvider>
           <LanguageProvider>
             {children}

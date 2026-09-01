@@ -1,8 +1,8 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { getDb } from "@/lib/db";
 import { users } from "@/lib/db/schema";
+import { withAnon } from "@/lib/db/rls";
 import { eq } from "drizzle-orm";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -18,11 +18,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         if (!phone || !password) return null;
 
-        const [user] = await getDb()
-          .select()
-          .from(users)
-          .where(eq(users.phone, phone))
-          .limit(1);
+        const [user] = await withAnon(async (tx) =>
+          tx.select().from(users).where(eq(users.phone, phone)).limit(1)
+        );
 
         if (!user || !user.passwordHash) return null;
 

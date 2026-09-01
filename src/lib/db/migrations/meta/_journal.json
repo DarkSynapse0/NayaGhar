@@ -22,6 +22,27 @@
       "when": 1774365560021,
       "tag": "0002_adorable_queen_noir",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1777743120750,
+      "tag": "0003_wooden_blob",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1777774173065,
+      "tag": "0004_lame_human_cannonball",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1777775678222,
+      "tag": "0005_misty_war_machine",
+      "breakpoints": true
     }
   ]
 }

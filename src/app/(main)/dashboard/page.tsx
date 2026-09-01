@@ -1,17 +1,20 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
-import { getDb } from "@/lib/db";
 import { listings } from "@/lib/db/schema";
+import { withRls } from "@/lib/db/rls";
 import { eq } from "drizzle-orm";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { ListingToggle } from "@/components/listing/ListingToggle";
 import { FadeIn, AnimatedSection } from "@/components/ui/AnimatedSection";
+import { EscrowSummaryCard } from "@/components/dashboard/EscrowSummaryCard";
+import { EscrowsList } from "@/components/dashboard/EscrowsList";
+import { PaymentsList } from "@/components/dashboard/PaymentsList";
 import { formatPrice } from "@/lib/constants";
 import {
   Building2, Search, Plus, Users, Clock, ArrowUpRight,
-  MapPin, TrendingUp, Eye, BarChart3, CircleDot,
+  MapPin, TrendingUp, Eye, BarChart3, CircleDot, Lock, Receipt,
 } from "lucide-react";
 
 export const metadata = { title: "Dashboard - NayaGhar" };
@@ -28,12 +31,14 @@ export default async function DashboardPage() {
   let myListings: (typeof listings.$inferSelect)[] = [];
   if (role === "landlord") {
     try {
-      myListings = await getDb()
-        .select()
-        .from(listings)
-        .where(eq(listings.landlordId, id))
-        .orderBy(listings.createdAt)
-        .limit(50);
+      myListings = await withRls(id, async (tx) =>
+        tx
+          .select()
+          .from(listings)
+          .where(eq(listings.landlordId, id))
+          .orderBy(listings.createdAt)
+          .limit(50)
+      );
     } catch (error) {
       console.error("Failed to fetch landlord listings:", error);
     }
@@ -62,7 +67,7 @@ export default async function DashboardPage() {
               <p className="text-sm text-[var(--text-muted)] mt-1">
                 {role === "landlord"
                   ? `Managing ${myListings.length} ${myListings.length === 1 ? "property" : "properties"}`
-                  : "Welcome to your dashboard"}
+                  : "Track your escrows and payments"}
               </p>
             </FadeIn>
             {role === "landlord" && (
@@ -79,6 +84,44 @@ export default async function DashboardPage() {
       </div>
 
       <div className="mx-auto max-w-6xl px-5 sm:px-8 py-8">
+        {/* Escrow snapshot row */}
+        <section className="mb-10 grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <FadeIn>
+            <EscrowSummaryCard
+              userId={id}
+              viewerRole={role === "landlord" ? "landlord" : "tenant"}
+            />
+          </FadeIn>
+          <FadeIn delay={0.05} className="lg:col-span-2">
+            <div className="rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] p-5 h-full">
+              <div className="flex items-center gap-2 mb-3">
+                <Lock className="w-4 h-4 text-[var(--accent)]" />
+                <h2 className="text-sm font-bold">Recent escrows</h2>
+                <span className="ml-auto text-[10px] uppercase tracking-wider text-[var(--text-muted)]">
+                  {role === "tenant" ? "as tenant" : "as landlord"}
+                </span>
+              </div>
+              <EscrowsList userId={id} viewerRole={role === "landlord" ? "landlord" : "tenant"} />
+            </div>
+          </FadeIn>
+        </section>
+
+        {/* Payment history */}
+        <section className="mb-10">
+          <FadeIn>
+            <div className="flex items-center gap-2 mb-4">
+              <Receipt className="w-4 h-4 text-emerald-400" />
+              <h2 className="text-lg font-bold">Payment history</h2>
+              <span className="ml-2 text-xs text-[var(--text-muted)]">
+                Esewa &amp; Khalti — both directions
+              </span>
+            </div>
+          </FadeIn>
+          <FadeIn delay={0.05}>
+            <PaymentsList userId={id} />
+          </FadeIn>
+        </section>
+
         {/* Stats */}
         {role === "landlord" && (
           <AnimatedSection className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-10" stagger={0.06}>

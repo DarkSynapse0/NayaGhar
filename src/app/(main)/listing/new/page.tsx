@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
-import { PROPERTY_TYPES, AMENITY_OPTIONS } from "@/lib/constants";
+import { PROPERTY_TYPES, AMENITY_OPTIONS, MAX_ESCROW_DEPOSIT_NPR } from "@/lib/constants";
 import {
   MapPin, IndianRupee, CalendarDays, ImagePlus, FileText, Sparkles, ArrowRight, ArrowLeft, Check,
   Building2,
@@ -78,6 +78,9 @@ export default function NewListingPage() {
     }
     if (step === 2) {
       if (!form.priceMonthly || Number(form.priceMonthly) <= 0) return "Please enter the monthly rent";
+      if (form.deposit && Number(form.deposit) > MAX_ESCROW_DEPOSIT_NPR) {
+        return `Deposit cannot exceed Rs ${MAX_ESCROW_DEPOSIT_NPR.toLocaleString()} (Esewa/Khalti limit)`;
+      }
     }
     return null;
   }
@@ -430,10 +433,13 @@ export default function NewListingPage() {
                   <Input
                     type="number"
                     placeholder="16000"
+                    max={MAX_ESCROW_DEPOSIT_NPR}
                     value={form.deposit}
                     onChange={(e) => updateForm("deposit", e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground mt-2">One-time refundable deposit</p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    One-time refundable deposit (max Rs {MAX_ESCROW_DEPOSIT_NPR.toLocaleString()} on platform)
+                  </p>
                 </div>
               </div>
 

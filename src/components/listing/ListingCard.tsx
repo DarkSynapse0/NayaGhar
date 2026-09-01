@@ -1,119 +1,88 @@
-"use client";
-
-import { useRef, useEffect } from "react";
 import Link from "next/link";
-import gsap from "gsap";
-import { BadgeCheck, MapPin, ArrowUpRight } from "lucide-react";
-import { PROPERTY_TYPE_LABELS, AMENITY_ICONS, formatPrice, formatPriceValue } from "@/lib/constants";
+import { BadgeCheck, MapPin } from "lucide-react";
+import { PROPERTY_TYPE_LABELS, AMENITY_ICONS, formatPriceValue } from "@/lib/constants";
 import type { Listing } from "@/types/listing";
 
+/**
+ * Listing card — the core wayfinding unit. Priority order (per PRODUCT.md):
+ * real photo, price, verification, location. Server component, no JS, so it
+ * stays cheap on 2G. Hover is CSS-only.
+ */
 export function ListingCard({ listing }: { listing: Listing }) {
-  const cardRef = useRef<HTMLAnchorElement>(null);
-
-  useEffect(() => {
-    const el = cardRef.current;
-    if (!el) return;
-    const enter = () => gsap.to(el, { y: -6, duration: 0.35, ease: "power3.out" });
-    const leave = () => gsap.to(el, { y: 0, duration: 0.35, ease: "power3.out" });
-    el.addEventListener("mouseenter", enter);
-    el.addEventListener("mouseleave", leave);
-    return () => { el.removeEventListener("mouseenter", enter); el.removeEventListener("mouseleave", leave); };
-  }, []);
-
   const photo = listing.photos?.[0];
-  const amenities = listing.amenities ? Object.entries(listing.amenities).filter(([, v]) => v).slice(0, 3) : [];
+  const amenities = listing.amenities
+    ? Object.entries(listing.amenities).filter(([, v]) => v)
+    : [];
+  const shownAmenities = amenities.slice(0, 3);
 
   return (
-    <Link ref={cardRef} href={`/listing/${listing.id}`} className="block will-change-transform">
-      <div className="relative rounded-[20px] overflow-hidden bg-[var(--bg-card)] border border-[var(--border)] hover:border-white/[0.1] transition-[border-color] duration-500 group">
+    <Link
+      href={`/listing/${listing.id}`}
+      className="group block rounded-[var(--radius-lg)] overflow-hidden bg-[var(--panel)] border border-[var(--line)] transition-[border-color,transform] duration-200 hover:border-[var(--ink)] hover:-translate-y-0.5"
+    >
+      {/* Photo */}
+      <div className="relative aspect-[4/3] overflow-hidden bg-[var(--paper-2)]">
+        {photo ? (
+          <img
+            src={photo.url}
+            alt={photo.alt || listing.title}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center dot-grid">
+            <span className="label text-[var(--ink-3)]">No photo yet</span>
+          </div>
+        )}
 
-        {/* Image area */}
-        <div className="relative h-56 sm:h-60 overflow-hidden">
-          {photo ? (
-            <img
-              src={photo.url}
-              alt={photo.alt || listing.title}
-              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.08]"
-              loading="lazy"
-            />
-          ) : (
-            <div className="w-full h-full bg-[var(--bg-elevated)] flex items-center justify-center">
-              <span className="text-[var(--text-muted)] text-xs uppercase tracking-widest">No Image</span>
-            </div>
-          )}
+        {/* Property type — ink chip, top left */}
+        <span className="label absolute top-3 left-3 rounded-[var(--radius-sm)] bg-[var(--panel)] text-[var(--ink)] border border-[var(--ink)] px-2 py-1">
+          {PROPERTY_TYPE_LABELS[listing.propertyType]}
+        </span>
 
-          {/* Permanent dark gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+        {/* Verified — the loudest trust signal, top right */}
+        {listing.isVerified && (
+          <span className="label absolute top-3 right-3 inline-flex items-center gap-1 rounded-[var(--radius-sm)] bg-[var(--verified)] text-white px-2 py-1">
+            <BadgeCheck className="w-3.5 h-3.5" /> Verified
+          </span>
+        )}
+      </div>
 
-          {/* Top row — type pill */}
-          <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
-            <span className="px-2.5 py-1 rounded-lg bg-white/10 backdrop-blur-md text-[11px] font-semibold text-white/80 uppercase tracking-wide">
-              {PROPERTY_TYPE_LABELS[listing.propertyType]}
-            </span>
-            {listing.isVerified && (
-              <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-emerald-500/20 backdrop-blur-md text-[11px] font-semibold text-emerald-400">
-                <BadgeCheck className="w-3 h-3" /> Verified
-              </span>
+      {/* Info */}
+      <div className="p-4">
+        <div className="flex items-baseline justify-between gap-3">
+          <span className="price-display text-xl font-extrabold text-[var(--ink)]">
+            Rs {formatPriceValue(listing.priceMonthly)}
+          </span>
+          <span className="text-xs text-[var(--ink-3)] font-medium shrink-0">/month</span>
+        </div>
+
+        <h3 className="mt-2 font-body font-semibold text-[15px] text-[var(--ink)] leading-snug line-clamp-1">
+          {listing.title}
+        </h3>
+
+        <div className="mt-1 flex items-center gap-1 text-[13px] text-[var(--ink-2)]">
+          <MapPin className="w-3.5 h-3.5 text-[var(--geo)] shrink-0" />
+          <span className="truncate">
+            {listing.neighborhood ? `${listing.neighborhood}, ${listing.city}` : listing.city}
+          </span>
+        </div>
+
+        {shownAmenities.length > 0 && (
+          <div className="mt-3 pt-3 border-t border-[var(--line)] flex items-center gap-2 text-[var(--ink-3)]">
+            {shownAmenities.map(([key]) => {
+              const Icon = AMENITY_ICONS[key];
+              return Icon ? (
+                <span key={key} className="inline-flex items-center gap-1 text-[11px]" title={key}>
+                  <Icon className="w-3.5 h-3.5" />
+                </span>
+              ) : null;
+            })}
+            {amenities.length > 3 && (
+              <span className="text-[11px]">+{amenities.length - 3} more</span>
             )}
           </div>
-
-          {/* Deposit overlay — bottom left on image */}
-          {listing.deposit && (
-            <div className="absolute bottom-4 left-4">
-              <span className="px-2.5 py-1 rounded-lg bg-black/50 backdrop-blur-md text-[11px] font-medium text-white/60">
-                Deposit {formatPrice(listing.deposit)}
-              </span>
-            </div>
-          )}
-
-          {/* Arrow — bottom right */}
-          <div className="absolute bottom-4 right-4 w-9 h-9 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-            <ArrowUpRight className="w-4 h-4 text-[var(--text)]" />
-          </div>
-        </div>
-
-        {/* Info */}
-        <div className="px-5 pb-5 pt-3 space-y-3">
-          <div>
-            <h3 className="font-bold text-[15px] text-[var(--text)] leading-snug line-clamp-1 group-hover:text-[var(--accent)] transition-colors duration-300">
-              {listing.title}
-            </h3>
-            <div className="flex items-center gap-1 mt-1.5">
-              <MapPin className="w-3 h-3 text-[var(--text-muted)] flex-shrink-0" />
-              <span className="text-[12px] text-[var(--text-muted)] truncate">
-                {listing.neighborhood ? `${listing.neighborhood}, ${listing.city}` : listing.city}
-              </span>
-            </div>
-          </div>
-
-          {/* Amenities */}
-          {amenities.length > 0 && (
-            <div className="flex items-center gap-1">
-              {amenities.map(([key]) => {
-                const Icon = AMENITY_ICONS[key];
-                return Icon ? (
-                  <div key={key} className="w-6 h-6 rounded-md bg-[var(--bg-hover)] flex items-center justify-center" title={key}>
-                    <Icon className="w-3 h-3 text-[var(--text-muted)]" />
-                  </div>
-                ) : null;
-              })}
-              {listing.amenities && Object.values(listing.amenities).filter(Boolean).length > 3 && (
-                <span className="text-[10px] text-[var(--text-muted)] ml-1">
-                  +{Object.values(listing.amenities).filter(Boolean).length - 3}
-                </span>
-              )}
-            </div>
-          )}
-
-          {/* Price */}
-          <div className="pt-2 border-t border-[var(--border)]">
-            <span className="text-[11px] text-[var(--text-muted)] font-medium mr-0.5">Rs.</span>
-            <span className="text-lg font-extrabold text-[var(--accent)]">
-              {formatPriceValue(listing.priceMonthly)}
-            </span>
-            <span className="text-[11px] text-[var(--text-muted)] font-medium ml-0.5">/mo</span>
-          </div>
-        </div>
+        )}
       </div>
     </Link>
   );

@@ -4,7 +4,7 @@ export function LogoIcon({ size = 20 }: { size?: number }) {
   return (
     <Image
       src="/logo.png"
-      alt="nayaGhar"
+      alt="NayaGhar"
       width={size}
       height={size}
       className="object-contain justify-center"
@@ -17,13 +17,13 @@ export function LogoFull({ iconSize = 32 }: { iconSize?: number }) {
     <div className="flex items-center justify-center gap-2.5">
       <Image
         src="/logo.png"
-        alt="UrbanNest"
+        alt="NayaGhar"
         width={iconSize}
         height={iconSize}
         className="object-contain"
       />
-      <span className="text-lg font-bold tracking-tight">
-        Urban<span className="text-[var(--accent)]">Nest</span>
+      <span className="font-display text-lg font-extrabold tracking-tight text-[var(--ink)]">
+        Naya<span className="text-[var(--brick)]">Ghar</span>
       </span>
     </div>
   );

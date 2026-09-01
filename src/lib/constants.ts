@@ -67,3 +67,15 @@ export const CITIES = [
 
 /** Top cities shown on the home page map overlay. */
 export const FEATURED_CITIES = ["Kathmandu", "Pokhara", "Lalitpur"] as const;
+
+/**
+ * Hackathon cap on escrowable deposits. Two reasons:
+ *   1. Esewa / Khalti standard accounts are limited to ~Rs 100k/transaction;
+ *      keeping deposits well under that avoids provider rejections.
+ *   2. SOL price volatility on the held escrow is a platform risk — capping
+ *      the per-escrow exposure caps that risk too.
+ *
+ * Production path: switch the escrow program to hold USDC instead of SOL.
+ */
+export const MAX_ESCROW_DEPOSIT_PAISA = 5_000_000; // Rs 50,000
+export const MAX_ESCROW_DEPOSIT_NPR = MAX_ESCROW_DEPOSIT_PAISA / 100;

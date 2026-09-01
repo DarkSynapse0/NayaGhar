@@ -41,7 +41,6 @@ export function Navbar() {
     setClosing(false);
   }
 
-  // Close all menus on navigation
   useEffect(() => {
     if (open) closeSheet();
     setUserMenuOpen(false);
@@ -72,13 +71,13 @@ export function Navbar() {
 
   return (
     <>
-      <header className="fixed top-0 inset-x-0 py-2 z-50 border-b border-[var(--border)] bg-[var(--bg)]/70 backdrop-blur-xl">
+      <header className="fixed top-0 inset-x-0 z-50 border-b-2 border-[var(--ink)] bg-[var(--paper)]/90 backdrop-blur-sm">
         <nav className="mx-auto flex h-14 max-w-7xl items-center justify-between px-5 sm:px-8">
           {/* Logo */}
           <Link href="/" className="flex items-center justify-center gap-2 group">
-            <LogoIcon size={64} />
-            <span className="text-lg font-bold tracking-tight">
-              Naya<span className="text-[var(--accent)]">Ghar</span>
+            <LogoIcon size={44} />
+            <span className="font-display text-lg font-extrabold tracking-tight text-[var(--ink)]">
+              Naya<span className="text-[var(--brick)]">Ghar</span>
             </span>
           </Link>
 
@@ -90,8 +89,8 @@ export function Navbar() {
                 <Link
                   key={href}
                   href={href}
-                  className={`relative flex items-center gap-2 h-9 px-3.5 rounded-lg text-[13px] font-medium transition-all duration-200 ${
-                    active ? "text-[var(--text)] bg-[var(--bg-elevated)]" : "text-[var(--text-secondary)] hover:text-white/80 hover:bg-[var(--bg-hover)]"
+                  className={`relative flex items-center gap-2 h-9 px-3.5 rounded-[var(--radius)] text-[13px] font-semibold transition-colors duration-150 ${
+                    active ? "text-[var(--ink)] bg-[var(--paper-2)]" : "text-[var(--ink-2)] hover:text-[var(--ink)] hover:bg-[var(--paper-2)]"
                   }`}
                 >
                   <Icon className="w-[15px] h-[15px]" />
@@ -100,37 +99,37 @@ export function Navbar() {
               );
             })}
 
-            <div className="w-px h-5 bg-[var(--bg-elevated)] mx-2" />
+            <div className="w-px h-5 bg-[var(--line)] mx-2" />
 
             {session ? (
               <div ref={userMenuRef} className="relative">
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className={`flex items-center gap-2 h-9 px-2 pr-2.5 rounded-full transition-all duration-200 ${
-                    userMenuOpen ? "bg-[var(--bg-elevated)]" : "hover:bg-[var(--bg-hover)]"
+                  className={`flex items-center gap-2 h-9 px-2 pr-2.5 rounded-[var(--radius)] transition-colors duration-150 ${
+                    userMenuOpen ? "bg-[var(--paper-2)]" : "hover:bg-[var(--paper-2)]"
                   }`}
                 >
-                  <div className="w-7 h-7 rounded-full bg-[var(--accent)] flex items-center justify-center text-[11px] font-bold text-[var(--text)]">
+                  <div className="w-7 h-7 rounded-[var(--radius-sm)] bg-[var(--brick)] flex items-center justify-center text-[11px] font-bold text-[var(--panel)]">
                     {session.user?.name?.charAt(0).toUpperCase()}
                   </div>
-                  <ChevronDown className={`w-3 h-3 text-[var(--text-muted)] transition-transform duration-200 ${userMenuOpen ? "rotate-180" : ""}`} />
+                  <ChevronDown className={`w-3 h-3 text-[var(--ink-3)] transition-transform duration-200 ${userMenuOpen ? "rotate-180" : ""}`} />
                 </button>
                 {userMenuOpen && (
-                  <div className="absolute top-full right-0 mt-2 w-56 bg-[var(--bg-card)] rounded-xl border border-[var(--border)] shadow-warm-3 overflow-hidden animate-scale-in z-50">
-                    <div className="px-4 py-3 border-b border-[var(--border)]">
-                      <p className="text-sm font-medium text-[var(--text)] truncate">{session.user?.name}</p>
-                      <p className="text-[12px] text-[var(--text-muted)] capitalize mt-0.5">{role} account</p>
+                  <div className="absolute top-full right-0 mt-2 w-56 bg-[var(--panel)] rounded-[var(--radius)] border border-[var(--ink)] shadow-warm-3 overflow-hidden animate-scale-in z-50">
+                    <div className="px-4 py-3 border-b border-[var(--line)]">
+                      <p className="text-sm font-semibold text-[var(--ink)] truncate">{session.user?.name}</p>
+                      <p className="label text-[var(--ink-3)] mt-1">{role} account</p>
                     </div>
                     <div className="py-1.5">
-                      <Link href="/dashboard" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-[13px] text-[var(--text-secondary)] hover:text-[var(--text)] hover:bg-[var(--bg-hover)] transition-all">
+                      <Link href="/dashboard" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-[13px] text-[var(--ink-2)] hover:text-[var(--ink)] hover:bg-[var(--paper-2)] transition-colors">
                         <LayoutDashboard className="w-4 h-4" />{"Dashboard"}
                       </Link>
-                      <Link href="/dashboard" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-[13px] text-[var(--text-secondary)] hover:text-[var(--text)] hover:bg-[var(--bg-hover)] transition-all">
+                      <Link href="/dashboard" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-[13px] text-[var(--ink-2)] hover:text-[var(--ink)] hover:bg-[var(--paper-2)] transition-colors">
                         <Settings className="w-4 h-4" />{"Account Settings"}
                       </Link>
                     </div>
-                    <div className="border-t border-[var(--border)] py-1.5">
-                      <button onClick={() => { setUserMenuOpen(false); signOut({ callbackUrl: "/" }); }} className="flex items-center gap-3 w-full px-4 py-2.5 text-[13px] text-red-400/60 hover:text-red-400 hover:bg-red-500/[0.06] transition-all">
+                    <div className="border-t border-[var(--line)] py-1.5">
+                      <button onClick={() => { setUserMenuOpen(false); signOut({ callbackUrl: "/" }); }} className="flex items-center gap-3 w-full px-4 py-2.5 text-[13px] text-[var(--danger)] hover:bg-[var(--danger-wash)] transition-colors">
                         <LogOut className="w-4 h-4" />{"Sign Out"}
                       </button>
                     </div>
@@ -140,12 +139,12 @@ export function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className={`flex items-center gap-2 h-9 px-4 rounded-full text-[13px] font-semibold transition-all duration-200 ${
-                  isActivePath(pathname, "/login") ? "bg-[var(--accent)] text-white" : "bg-[var(--bg-elevated)] text-[var(--text)] hover:bg-[var(--bg-hover)]"
+                className={`flex items-center gap-2 h-9 px-4 rounded-[var(--radius)] font-display text-[13px] font-bold transition-colors duration-150 ${
+                  isActivePath(pathname, "/login") ? "bg-[var(--brick-ink)] text-[var(--panel)]" : "bg-[var(--brick)] text-[var(--panel)] hover:bg-[var(--brick-ink)]"
                 }`}
               >
                 <User className="w-[15px] h-[15px]" />
-                {"Landlord Login"}
+                {"Sign In"}
               </Link>
             )}
 
@@ -153,21 +152,21 @@ export function Navbar() {
             <div ref={langRef} className="relative ml-1 notranslate">
               <button
                 onClick={() => setLangOpen(!langOpen)}
-                className={`flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-[13px] font-medium transition-all duration-200 ${
-                  langOpen ? "bg-[var(--bg-elevated)] text-[var(--text)]" : "text-[var(--text-secondary)] hover:text-[var(--text)] hover:bg-[var(--bg-hover)]"
+                className={`flex items-center gap-1.5 h-8 px-2.5 rounded-[var(--radius)] text-[13px] font-medium transition-colors duration-150 ${
+                  langOpen ? "bg-[var(--paper-2)] text-[var(--ink)]" : "text-[var(--ink-2)] hover:text-[var(--ink)] hover:bg-[var(--paper-2)]"
                 }`}
               >
                 <span className="text-base leading-none">{currentFlag}</span>
                 <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${langOpen ? "rotate-180" : ""}`} />
               </button>
               {langOpen && (
-                <div className="absolute top-full right-0 mt-2 w-40 bg-[var(--bg-card)] rounded-xl border border-[var(--border)] shadow-warm-3 overflow-hidden animate-scale-in z-50">
+                <div className="absolute top-full right-0 mt-2 w-40 bg-[var(--panel)] rounded-[var(--radius)] border border-[var(--ink)] shadow-warm-3 overflow-hidden animate-scale-in z-50">
                   {LANGUAGES.map((l) => (
                     <button
                       key={l.code}
                       onClick={() => { setLang(l.code); setLangOpen(false); }}
                       className={`flex items-center gap-3 w-full px-4 py-2.5 text-[13px] text-left transition-colors ${
-                        lang === l.code ? "text-[var(--accent)] bg-[var(--accent)]/[0.08]" : "text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text)]"
+                        lang === l.code ? "text-[var(--brick)] bg-[var(--brick-wash)]" : "text-[var(--ink-2)] hover:bg-[var(--paper-2)] hover:text-[var(--ink)]"
                       }`}
                     >
                       <span className="text-base leading-none">{l.flag}</span>
@@ -181,17 +180,18 @@ export function Navbar() {
 
           {/* Mobile */}
           <div className="flex items-center gap-1 md:hidden" translate="no">
-            {/* Mobile language flag */}
             <button
+              type="button"
+              aria-label="Switch language"
               onClick={() => setLang(lang === "en" ? "ne" : "en")}
-              className="notranslate w-9 h-9 rounded-lg flex items-center justify-center hover:bg-[var(--bg-hover)] transition-colors text-base"
+              className="notranslate w-11 h-11 rounded-[var(--radius)] flex items-center justify-center hover:bg-[var(--paper-2)] transition-colors text-lg"
               translate="no"
               data-notranslate=""
             >
               <span className="notranslate" translate="no">{currentFlag}</span>
             </button>
-            <button onClick={openSheet} className="w-9 h-9 rounded-lg flex items-center justify-center hover:bg-[var(--bg-hover)] transition-colors">
-              <Menu className="w-5 h-5 text-white/60" />
+            <button type="button" aria-label="Open menu" onClick={openSheet} className="w-11 h-11 rounded-[var(--radius)] flex items-center justify-center hover:bg-[var(--paper-2)] transition-colors">
+              <Menu className="w-6 h-6 text-[var(--ink)]" />
             </button>
           </div>
         </nav>
@@ -200,16 +200,16 @@ export function Navbar() {
       {/* Mobile sheet */}
       {open && (
         <div className="fixed inset-0 z-[100] md:hidden">
-          <div className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-250 ${closing ? "opacity-0" : "animate-fade-in"}`} onClick={closeSheet} />
-          <div className={`absolute top-0 right-0 h-full w-[300px] max-w-[85vw] bg-[var(--bg-card)] border-l border-[var(--border)] flex flex-col shadow-warm-4 transition-transform duration-250 ease-out ${closing ? "translate-x-full" : "animate-slide-in-right"}`}>
+          <div className={`absolute inset-0 bg-[var(--ink)]/40 backdrop-blur-sm transition-opacity duration-250 ${closing ? "opacity-0" : "animate-fade-in"}`} onClick={closeSheet} />
+          <div className={`absolute top-0 right-0 h-full w-[300px] max-w-[85vw] bg-[var(--panel)] border-l-2 border-[var(--ink)] flex flex-col shadow-warm-4 transition-transform duration-250 ease-out ${closing ? "translate-x-full" : "animate-slide-in-right"}`}>
 
-            <div className="flex items-center justify-between px-5 h-14 border-b border-[var(--border)]">
+            <div className="flex items-center justify-between px-5 h-14 border-b-2 border-[var(--ink)]">
               <Link href="/" className="flex items-center gap-2" onClick={closeSheet}>
-                <LogoIcon size={30} />
-                <span className="text-base font-bold">Naya<span className="text-[var(--accent)]">Ghar</span></span>
+                <LogoIcon size={38} />
+                <span className="font-display text-base font-extrabold text-[var(--ink)]">Naya<span className="text-[var(--brick)]">Ghar</span></span>
               </Link>
-              <button onClick={closeSheet} className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[var(--bg-hover)]">
-                <X className="w-4 h-4 text-[var(--text-secondary)]" />
+              <button type="button" aria-label="Close menu" onClick={closeSheet} className="w-10 h-10 rounded-[var(--radius)] flex items-center justify-center hover:bg-[var(--paper-2)]">
+                <X className="w-4 h-4 text-[var(--ink-2)]" />
               </button>
             </div>
 
@@ -224,39 +224,38 @@ export function Navbar() {
                     key={href}
                     href={href}
                     onClick={closeSheet}
-                    className={`flex items-center justify-between h-12 px-3 rounded-xl text-sm font-medium transition-all ${
-                      active ? "text-[var(--text)] bg-[var(--bg-elevated)]" : "text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]"
+                    className={`flex items-center justify-between h-12 px-3 rounded-[var(--radius)] text-sm font-semibold transition-colors ${
+                      active ? "text-[var(--ink)] bg-[var(--paper-2)]" : "text-[var(--ink-2)] hover:bg-[var(--paper-2)]"
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <Icon className="w-[18px] h-[18px]" />
                       {label}
                     </div>
-                    <ChevronRight className="w-4 h-4 text-[var(--text-muted)]" />
+                    <ChevronRight className="w-4 h-4 text-[var(--ink-3)]" />
                   </Link>
                 );
               })}
 
               {!session && (
                 <>
-                  <div className="h-px bg-[var(--bg-hover)] my-2 mx-3" />
-                  <Link href="/login" onClick={closeSheet} className="flex items-center justify-between h-12 px-3 rounded-xl text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] transition-all">
-                    <div className="flex items-center gap-3"><User className="w-[18px] h-[18px]" />{"Landlord Login"}</div>
-                    <ChevronRight className="w-4 h-4 text-[var(--text-muted)]" />
+                  <div className="h-px bg-[var(--line)] my-2 mx-3" />
+                  <Link href="/login" onClick={closeSheet} className="flex items-center justify-center gap-2 h-12 mx-1 rounded-[var(--radius)] font-display text-sm font-bold bg-[var(--brick)] text-[var(--panel)] hover:bg-[var(--brick-ink)] transition-colors">
+                    <User className="w-[18px] h-[18px]" />{"Sign In"}
                   </Link>
                 </>
               )}
 
               {/* Language */}
               <div className="notranslate">
-                <div className="h-px bg-[var(--bg-hover)] my-2 mx-3" />
-                <p className="px-6 py-2 text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">Language</p>
+                <div className="h-px bg-[var(--line)] my-2 mx-3" />
+                <p className="label px-3 py-2 text-[var(--ink-3)]">Language</p>
                 {LANGUAGES.map((l) => (
                   <button
                     key={l.code}
                     onClick={() => setLang(l.code)}
-                    className={`flex items-center gap-3 h-12 px-3 rounded-xl text-sm font-medium w-full transition-all ${
-                      lang === l.code ? "text-[var(--text)] bg-[var(--bg-elevated)]" : "text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]"
+                    className={`flex items-center gap-3 h-12 px-3 rounded-[var(--radius)] text-sm font-semibold w-full transition-colors ${
+                      lang === l.code ? "text-[var(--brick)] bg-[var(--brick-wash)]" : "text-[var(--ink-2)] hover:bg-[var(--paper-2)]"
                     }`}
                   >
                     <span className="text-base">{l.flag}</span> {l.label}
@@ -266,22 +265,19 @@ export function Navbar() {
             </div>
 
             {session && (
-              <div className="border-t border-[var(--border)] p-4">
+              <div className="border-t-2 border-[var(--ink)] p-4">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-9 h-9 rounded-lg bg-[var(--accent)]/15 flex items-center justify-center text-sm font-bold text-[var(--accent)]">
+                  <div className="w-9 h-9 rounded-[var(--radius-sm)] bg-[var(--brick)] flex items-center justify-center text-sm font-bold text-[var(--panel)]">
                     {session.user?.name?.charAt(0).toUpperCase()}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm font-medium truncate">{session.user?.name}</p>
-                    <p className="text-[11px] text-[var(--text-muted)] capitalize">{role}</p>
+                    <p className="text-sm font-semibold truncate text-[var(--ink)]">{session.user?.name}</p>
+                    <p className="label text-[var(--ink-3)] mt-0.5">{role}</p>
                   </div>
                 </div>
-                <Link href="/dashboard" onClick={closeSheet} className="flex items-center gap-3 w-full h-10 px-3 rounded-xl text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] transition-all mb-2">
-                  <Settings className="w-4 h-4" />{"Account Settings"}
-                </Link>
                 <button
                   onClick={() => { closeSheet(); setTimeout(() => signOut({ callbackUrl: "/" }), 300); }}
-                  className="flex items-center justify-center gap-2 w-full h-10 rounded-xl text-sm font-medium text-red-400/60 hover:text-red-400 border border-red-500/[0.08] hover:bg-red-500/[0.06] transition-all"
+                  className="flex items-center justify-center gap-2 w-full h-10 rounded-[var(--radius)] text-sm font-semibold text-[var(--danger)] border border-[var(--danger)]/40 hover:bg-[var(--danger-wash)] transition-colors"
                 >
                   <LogOut className="w-4 h-4" />{"Sign Out"}
                 </button>

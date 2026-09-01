@@ -48,3 +48,6 @@ embedding-service/venv/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Database backups (contain data; keep out of git)
+backups/
