@@ -32,30 +32,29 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] p-6">
-      <h1 className="text-xl font-bold text-center">Landlord Sign In</h1>
-      <p className="text-sm text-[var(--text-muted)] text-center mt-1">Sign in to manage your listings</p>
+    <div className="rounded-[var(--radius-lg)] bg-[var(--panel)] border border-[var(--ink)] p-6 sm:p-7">
+      <p className="label text-[var(--brick)]">Welcome back</p>
+      <h1 className="mt-2 font-display text-2xl font-extrabold tracking-tight text-[var(--ink)]">Landlord sign in</h1>
+      <p className="mt-1.5 text-sm text-[var(--ink-2)]">Sign in to manage your listings.</p>
 
       {error && (
-        <div className="mt-4 rounded-xl bg-[var(--red)]/10 border border-[var(--red)]/20 p-3 text-sm text-[var(--red)] text-center animate-shake">
+        <div className="mt-5 rounded-[var(--radius)] bg-[var(--danger-wash)] border border-[var(--danger)]/30 p-3 text-sm text-[var(--danger)] text-center animate-shake">
           {error}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-        <Input label="Phone Number" type="tel" placeholder="+977 98XXXXXXXX" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+        <Input label="Phone number" type="tel" placeholder="+977 98XXXXXXXX" value={phone} onChange={(e) => setPhone(e.target.value)} required />
         <Input label="Password" type="password" placeholder="Your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         <Button size="lg" className="w-full" disabled={loading}>
-          {loading ? "Signing in..." : "Sign In"}
+          {loading ? "Signing in..." : "Sign in"}
         </Button>
       </form>
 
-      <div className="mt-6 text-center">
-        <p className="text-sm text-[var(--text-muted)]">
-          Want to list your property?{" "}
-          <Link href="/register" className="text-[var(--accent)] hover:underline">Register as a landlord</Link>
-        </p>
-      </div>
+      <p className="mt-6 text-center text-sm text-[var(--ink-2)]">
+        Want to list your property?{" "}
+        <Link href="/register" className="font-semibold text-[var(--brick)] hover:underline">Register as a landlord</Link>
+      </p>
     </div>
   );
 }

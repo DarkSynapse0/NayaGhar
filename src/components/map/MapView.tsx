@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Map, { NavigationControl, type MapRef, type ViewStateChangeEvent } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import Link from "next/link";
@@ -29,6 +29,11 @@ interface MapViewProps {
   initialCenter?: { lat: number; lng: number; zoom?: number };
   /** When false, markers are not clickable and no info panel opens (detail map). */
   selectable?: boolean;
+  /**
+   * When set, the map animates to fit this bounding box. Bump `nonce` to
+   * re-trigger a fit even if the box is unchanged (e.g. re-running a search).
+   */
+  focus?: { minLat: number; maxLat: number; minLng: number; maxLng: number; nonce: number } | null;
   children?: React.ReactNode;
 }
 
@@ -37,6 +42,7 @@ export function MapView({
   onBoundsChange,
   initialCenter,
   selectable = true,
+  focus,
   children,
 }: MapViewProps) {
   const mapRef = useRef<MapRef>(null);
@@ -76,6 +82,22 @@ export function MapView({
 
   const close = useCallback(() => setSelected(null), []);
 
+  // Animate to fit the matched results whenever a search runs (focus.nonce bumps).
+  useEffect(() => {
+    if (!focus) return;
+    const map = mapRef.current?.getMap();
+    if (!map) return;
+    map.fitBounds(
+      [
+        [focus.minLng, focus.minLat],
+        [focus.maxLng, focus.maxLat],
+      ],
+      { padding: 64, maxZoom: 15, duration: 700 }
+    );
+    // Only re-fit on an explicit new search, not on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focus?.nonce]);
+
   return (
     <div className="relative w-full h-full">
       <Map
@@ -93,7 +115,7 @@ export function MapView({
         style={{ width: "100%", height: "100%" }}
         attributionControl={{ compact: true }}
       >
-        <NavigationControl position="top-left" />
+        <NavigationControl position="top-right" />
         <ListingMarkers
           listings={listings}
           zoom={viewState.zoom}

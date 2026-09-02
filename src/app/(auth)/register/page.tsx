@@ -80,53 +80,50 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] p-6">
-      <h1 className="text-xl font-bold text-center">Create Account</h1>
-      <p className="text-sm text-[var(--text-muted)] text-center mt-1">
-        Join NayaGhar to find or list a home
-      </p>
+    <div className="rounded-[var(--radius-lg)] bg-[var(--panel)] border border-[var(--ink)] p-6 sm:p-7">
+      <p className="label text-[var(--brick)]">Get started</p>
+      <h1 className="mt-2 font-display text-2xl font-extrabold tracking-tight text-[var(--ink)]">Create your account</h1>
+      <p className="mt-1.5 text-sm text-[var(--ink-2)]">Join NayaGhar to find or list a home.</p>
 
       {/* Role selector */}
-      <div className="mt-6 grid grid-cols-2 gap-2 p-1 rounded-xl bg-[var(--bg-elevated)] border border-[var(--border)]">
+      <div className="mt-6 grid grid-cols-2 gap-2 p-1 rounded-[var(--radius)] bg-[var(--paper-2)] border border-[var(--line)]">
         <RoleTab
           active={role === "tenant"}
           onClick={() => setRole("tenant")}
           icon={Home}
-          label="I'm a Tenant"
+          label="I'm a tenant"
           desc="Find a home"
         />
         <RoleTab
           active={role === "landlord"}
           onClick={() => setRole("landlord")}
           icon={Building2}
-          label="I'm a Landlord"
+          label="I'm a landlord"
           desc="List property"
         />
       </div>
 
       {error && (
-        <div className="mt-4 rounded-xl bg-[var(--red)]/10 border border-[var(--red)]/20 p-3 text-sm text-[var(--red)] text-center animate-shake">
+        <div className="mt-4 rounded-[var(--radius)] bg-[var(--danger-wash)] border border-[var(--danger)]/30 p-3 text-sm text-[var(--danger)] text-center animate-shake">
           {error}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="mt-5 space-y-4">
-        <Input name="name" label="Full Name" placeholder="Your name" required />
-        <Input name="phone" label="Phone Number" type="tel" placeholder="+977 98XXXXXXXX" required />
+        <Input name="name" label="Full name" placeholder="Your name" required />
+        <Input name="phone" label="Phone number" type="tel" placeholder="+977 98XXXXXXXX" required />
         <Input name="email" label="Email (optional)" type="email" placeholder="you@example.com" />
         <Input name="password" label="Password" type="password" placeholder="At least 6 characters" required />
-        <Input name="confirmPassword" label="Confirm Password" type="password" placeholder="Repeat your password" required />
+        <Input name="confirmPassword" label="Confirm password" type="password" placeholder="Repeat your password" required />
         <Button size="lg" className="w-full" disabled={submitting}>
-          {submitting ? "Creating account..." : `Register as ${role === "tenant" ? "Tenant" : "Landlord"}`}
+          {submitting ? "Creating account..." : `Register as ${role === "tenant" ? "tenant" : "landlord"}`}
         </Button>
       </form>
 
-      <div className="mt-6 text-center">
-        <p className="text-sm text-[var(--text-muted)]">
-          Already have an account?{" "}
-          <Link href="/login" className="text-[var(--accent)] hover:underline">Sign in</Link>
-        </p>
-      </div>
+      <p className="mt-6 text-center text-sm text-[var(--ink-2)]">
+        Already have an account?{" "}
+        <Link href="/login" className="font-semibold text-[var(--brick)] hover:underline">Sign in</Link>
+      </p>
     </div>
   );
 }
@@ -148,19 +145,19 @@ function RoleTab({
     <button
       type="button"
       onClick={onClick}
-      className={`flex flex-col items-start gap-1 p-3 rounded-lg transition-all ${
+      className={`flex flex-col items-start gap-1 p-3 rounded-[var(--radius-sm)] transition-colors ${
         active
-          ? "bg-[var(--bg-card)] border border-[var(--accent)] shadow-sm"
-          : "border border-transparent text-[var(--text-muted)] hover:text-[var(--text)]"
+          ? "bg-[var(--panel)] border border-[var(--ink)]"
+          : "border border-transparent text-[var(--ink-3)] hover:text-[var(--ink)]"
       }`}
     >
       <div className="flex items-center gap-2">
-        <Icon className={`w-4 h-4 ${active ? "text-[var(--accent)]" : ""}`} />
-        <span className={`text-sm font-semibold ${active ? "text-[var(--text)]" : ""}`}>
+        <Icon className={`w-4 h-4 ${active ? "text-[var(--brick)]" : ""}`} />
+        <span className={`text-sm font-semibold ${active ? "text-[var(--ink)]" : ""}`}>
           {label}
         </span>
       </div>
-      <span className="text-[11px] text-[var(--text-muted)]">{desc}</span>
+      <span className="text-[11px] text-[var(--ink-3)]">{desc}</span>
     </button>
   );
 }

@@ -11,11 +11,29 @@ import Link from "next/link";
 import { MediaGallery } from "@/components/listing/MediaGallery";
 import { DepositCTA } from "@/components/listing/DepositCTA";
 import { ReviewForm } from "@/components/listing/ReviewForm";
+import { ListingActions } from "@/components/listing/ListingActions";
 import { formatPrice, AMENITY_ICONS, PROPERTY_TYPE_LABELS } from "@/lib/constants";
 import {
   BadgeCheck, MapPin, MessageCircle, Star, Shield, Phone,
-  CalendarDays, Home, ArrowLeft, Camera, KeyRound, ArrowRight,
+  CalendarDays, Home, ArrowLeft, Camera, KeyRound, ArrowRight, Check,
 } from "lucide-react";
+
+// Amenities organised into named groups (reference "Features" layout).
+const FEATURE_GROUPS = [
+  { title: "Connectivity", keys: ["WiFi"] },
+  { title: "Comfort", keys: ["AC", "Furnished"] },
+  { title: "Kitchen & Laundry", keys: ["Kitchen", "Laundry"] },
+  { title: "Utilities", keys: ["Power Backup", "Water Supply"] },
+  { title: "Parking & Access", keys: ["Parking"] },
+  { title: "Safety", keys: ["Security", "CCTV"] },
+];
+
+// The "how renting works" steps shown in the booking rail.
+const RENT_STEPS = [
+  { t: "Message the landlord", d: "Contact on WhatsApp, ask your questions and arrange a visit." },
+  { t: "Visit and confirm", d: "See the room in person before you pay anything." },
+  { t: "Pay the deposit safely", d: "NayaGhar holds your deposit in escrow until you move in." },
+];
 
 export default async function ListingDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -53,9 +71,15 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
   const activeAmenities = listing.amenities
     ? Object.entries(listing.amenities).filter(([, v]) => v)
     : [];
+  const amenitySet = new Set(activeAmenities.map(([k]) => k));
+  const featureGroups = FEATURE_GROUPS
+    .map((g) => ({ title: g.title, items: g.keys.filter((k) => amenitySet.has(k)) }))
+    .filter((g) => g.items.length > 0);
+  const includedChecklist = ["WiFi", "Water Supply", "Power Backup", "Furnished"].filter((k) => amenitySet.has(k));
   const avgRating = listingReviews.length
     ? (listingReviews.reduce((s, r) => s + r.rating, 0) / listingReviews.length).toFixed(1)
     : null;
+  const ratingRounded = avgRating ? Math.round(Number(avgRating)) : 0;
 
   const isOwner = session?.user?.id === listing.landlordId;
 
@@ -143,7 +167,44 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
           </Link>
         )}
 
-        {/* Media */}
+        {/* Header — rating, title, location, actions (above gallery) */}
+        <div className="flex items-start justify-between gap-4 mb-4">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 text-sm">
+              {avgRating ? (
+                <>
+                  <div className="flex">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} className={`w-4 h-4 ${i < ratingRounded ? "text-[var(--pending)] fill-[var(--pending)]" : "text-[var(--line)]"}`} />
+                    ))}
+                  </div>
+                  <span className="price-display font-bold text-[var(--ink)]">{avgRating}</span>
+                  <span className="text-[var(--ink-3)]">· {listingReviews.length} {listingReviews.length === 1 ? "review" : "reviews"}</span>
+                </>
+              ) : (
+                <span className="label text-[var(--brick)]">New listing</span>
+              )}
+            </div>
+
+            <h1 className="mt-2 font-display text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight leading-tight">
+              {listing.title}
+            </h1>
+
+            <div className="flex items-start gap-1.5 mt-2 text-sm text-[var(--ink-2)]">
+              <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5 text-[var(--geo)]" />
+              <span>
+                {listing.address}
+                {listing.neighborhood && ` · ${listing.neighborhood}`} · {listing.city}
+              </span>
+            </div>
+          </div>
+
+          <div className="hidden sm:block">
+            <ListingActions listingId={listing.id} title={listing.title} />
+          </div>
+        </div>
+
+        {/* Media gallery */}
         {mediaItems.length > 0 ? (
           <MediaGallery items={mediaItems} />
         ) : (
@@ -153,64 +214,65 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
           </div>
         )}
 
-        {/* Title + trust header */}
-        <div className="mt-6">
-          <div className="flex flex-wrap items-center gap-2 mb-3">
-            {listing.isVerified && (
-              <Badge variant="success"><BadgeCheck className="w-3.5 h-3.5" /> Verified</Badge>
-            )}
-            <Badge>{PROPERTY_TYPE_LABELS[listing.propertyType] ?? listing.propertyType}</Badge>
-            {avgRating && (
-              <Badge variant="warning"><Star className="w-3.5 h-3.5" /> {avgRating}</Badge>
-            )}
-          </div>
-
-          <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight leading-tight">
-            {listing.title}
-          </h1>
-
-          <div className="flex items-start gap-1.5 mt-2 text-sm text-[var(--ink-2)]">
-            <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5 text-[var(--geo)]" />
-            <span>
-              {listing.address}
-              {listing.neighborhood && ` · ${listing.neighborhood}`} · {listing.city}
-            </span>
-          </div>
-        </div>
-
         {/* Content grid */}
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Main */}
           <div className="lg:col-span-2 space-y-10">
+            {/* Overview meta */}
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm pb-6 border-b border-[var(--line)]">
+              <span className="inline-flex items-center gap-1.5 font-semibold text-[var(--ink)]">
+                <Home className="w-4 h-4 text-[var(--brick)]" /> {PROPERTY_TYPE_LABELS[listing.propertyType] ?? listing.propertyType}
+              </span>
+              {listing.isVerified && (
+                <span className="inline-flex items-center gap-1.5 text-[var(--verified)] font-semibold">
+                  <BadgeCheck className="w-4 h-4" /> Verified listing
+                </span>
+              )}
+              {listing.availableFrom && (
+                <span className="inline-flex items-center gap-1.5 text-[var(--ink-2)]">
+                  <CalendarDays className="w-4 h-4" /> Available {toNepaliDate(listing.availableFrom)}
+                </span>
+              )}
+            </div>
+
             {/* About */}
             <section>
-              <p className="label text-[var(--ink-3)] mb-3">About this place</p>
+              <p className="label text-[var(--brick)]">About</p>
+              <h2 className="mt-1.5 mb-3 font-display text-xl font-bold tracking-tight">About this place</h2>
               <p className="text-[var(--ink-2)] whitespace-pre-line leading-relaxed max-w-[68ch]">
                 {listing.description}
               </p>
             </section>
 
-            {/* Amenities */}
-            {activeAmenities.length > 0 && (
+            {/* Features — grouped by category */}
+            {featureGroups.length > 0 && (
               <section>
-                <p className="label text-[var(--ink-3)] mb-3">What&apos;s included</p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {activeAmenities.map(([key]) => {
-                    const Icon = AMENITY_ICONS[key] || Shield;
-                    return (
-                      <div key={key} className="flex items-center gap-3 p-3 rounded-[var(--radius)] bg-[var(--panel)] border border-[var(--line)]">
-                        <Icon className="w-4 h-4 text-[var(--brick)] flex-shrink-0" />
-                        <span className="text-sm font-medium text-[var(--ink)]">{key}</span>
-                      </div>
-                    );
-                  })}
+                <p className="label text-[var(--brick)]">Features</p>
+                <h2 className="mt-1.5 mb-4 font-display text-xl font-bold tracking-tight">What this place offers</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6">
+                  {featureGroups.map((group) => (
+                    <div key={group.title}>
+                      <h3 className="text-sm font-bold text-[var(--ink)]">{group.title}</h3>
+                      <ul className="mt-2.5 space-y-2">
+                        {group.items.map((key) => {
+                          const Icon = AMENITY_ICONS[key] || Shield;
+                          return (
+                            <li key={key} className="flex items-center gap-2.5 text-sm text-[var(--ink-2)]">
+                              <Icon className="w-4 h-4 text-[var(--brick)] shrink-0" /> {key}
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  ))}
                 </div>
               </section>
             )}
 
             {/* Location / map — prominent */}
             <section>
-              <p className="label text-[var(--geo)] mb-3">Location</p>
+              <p className="label text-[var(--geo)]">Location</p>
+              <h2 className="mt-1.5 mb-3 font-display text-xl font-bold tracking-tight">Where you&apos;ll be</h2>
               <div className="rounded-[var(--radius-lg)] overflow-hidden border border-[var(--ink)] h-64 sm:h-80">
                 <ListingDetailMap latitude={listing.latitude} longitude={listing.longitude} title={listing.title} />
               </div>
@@ -221,8 +283,11 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
 
             {/* Reviews */}
             <section>
-              <div className="flex items-center justify-between mb-4">
-                <p className="label text-[var(--ink-3)]">Reviews ({listingReviews.length})</p>
+              <div className="flex items-end justify-between mb-4">
+                <div>
+                  <p className="label text-[var(--brick)]">Reviews</p>
+                  <h2 className="mt-1.5 font-display text-xl font-bold tracking-tight">What tenants say ({listingReviews.length})</h2>
+                </div>
                 {avgRating && (
                   <div className="flex items-center gap-1.5 text-sm">
                     <Star className="w-4 h-4 text-[var(--pending)] fill-[var(--pending)]" />
@@ -269,13 +334,23 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
               {/* Price + contact */}
               <div className="rounded-[var(--radius-lg)] bg-[var(--panel)] border border-[var(--ink)] p-5">
                 <div className="flex items-baseline gap-1.5">
-                  <span className="price-display text-3xl font-black text-[var(--ink)]">{formatPrice(listing.priceMonthly)}</span>
+                  <span className="price-display text-3xl font-black text-[var(--brick)]">{formatPrice(listing.priceMonthly)}</span>
                   <span className="text-sm text-[var(--ink-3)]">/month</span>
                 </div>
-                {listing.deposit && (
+                {listing.deposit ? (
                   <p className="mt-1 text-sm text-[var(--ink-2)]">
                     Deposit <span className="price-display font-semibold text-[var(--ink)]">{formatPrice(listing.deposit)}</span>
                   </p>
+                ) : null}
+
+                {includedChecklist.length > 0 && (
+                  <ul className="mt-4 space-y-1.5">
+                    {includedChecklist.map((k) => (
+                      <li key={k} className="flex items-center gap-2 text-sm text-[var(--ink-2)]">
+                        <Check className="w-4 h-4 text-[var(--verified)] shrink-0" /> {k} included
+                      </li>
+                    ))}
+                  </ul>
                 )}
 
                 {!isOwner && (
@@ -304,9 +379,27 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
                     )}
                   </div>
                 )}
-                <p className="mt-3 text-[11px] text-[var(--ink-3)] leading-relaxed">
-                  Always visit in person before paying. NayaGhar holds deposits in escrow until you move in.
-                </p>
+
+                <div className="mt-4 pt-4 border-t border-[var(--line)] space-y-1.5 text-[12px] text-[var(--ink-2)]">
+                  <p className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-[var(--verified)]" /> No charge until you move in</p>
+                  <p className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-[var(--verified)]" /> Deposit held in escrow by NayaGhar</p>
+                </div>
+              </div>
+
+              {/* How renting works */}
+              <div className="rounded-[var(--radius-lg)] bg-[var(--panel)] border border-[var(--line)] p-5">
+                <p className="label text-[var(--brick)] mb-4">How renting works</p>
+                <ol className="space-y-4">
+                  {RENT_STEPS.map((s, i) => (
+                    <li key={s.t} className="flex gap-3">
+                      <span className="shrink-0 w-6 h-6 rounded-full bg-[var(--brick-wash)] text-[var(--brick)] font-display font-bold text-xs flex items-center justify-center">{i + 1}</span>
+                      <div>
+                        <p className="text-sm font-semibold text-[var(--ink)]">{s.t}</p>
+                        <p className="mt-0.5 text-[13px] text-[var(--ink-2)] leading-relaxed">{s.d}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
               </div>
 
               {/* Landlord trust card */}
@@ -336,21 +429,9 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
                 )}
               </div>
 
-              {/* Details */}
-              <div className="rounded-[var(--radius-lg)] bg-[var(--panel)] border border-[var(--line)] p-5">
-                <p className="label text-[var(--ink-3)] mb-3">Details</p>
-                <dl className="space-y-3 text-sm">
-                  <div className="flex items-center justify-between">
-                    <dt className="flex items-center gap-2 text-[var(--ink-2)]"><Home className="w-4 h-4" /> Type</dt>
-                    <dd className="font-semibold text-[var(--ink)] capitalize">{listing.propertyType}</dd>
-                  </div>
-                  {listing.availableFrom && (
-                    <div className="flex items-center justify-between">
-                      <dt className="flex items-center gap-2 text-[var(--ink-2)]"><CalendarDays className="w-4 h-4" /> Available</dt>
-                      <dd className="font-semibold text-[var(--ink)]">{toNepaliDate(listing.availableFrom)}</dd>
-                    </div>
-                  )}
-                </dl>
+              {/* Save / Share on mobile (header actions are desktop-only) */}
+              <div className="sm:hidden">
+                <ListingActions listingId={listing.id} title={listing.title} />
               </div>
             </div>
           </div>

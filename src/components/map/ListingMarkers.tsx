@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { Marker } from "react-map-gl/maplibre";
 import useSupercluster from "use-supercluster";
+import { Home } from "lucide-react";
 import type { Listing } from "@/types/listing";
 
 interface ListingMarkersProps {
@@ -10,13 +11,6 @@ interface ListingMarkersProps {
   zoom: number;
   onListingClick?: (listing: Listing) => void;
   onClusterClick?: (longitude: number, latitude: number, expansionZoom: number) => void;
-}
-
-function formatPrice(paisa: number): string {
-  const rupees = paisa / 100;
-  if (rupees >= 100000) return `${(rupees / 100000).toFixed(1)}L`;
-  if (rupees >= 1000) return `${(rupees / 1000).toFixed(0)}K`;
-  return `${rupees}`;
 }
 
 export function ListingMarkers({
@@ -101,10 +95,14 @@ export function ListingMarkers({
           <Marker key={`listing-${listing.id}`} longitude={lng} latitude={lat} anchor="bottom">
             <button
               type="button"
+              aria-label={listing.title}
               onClick={(e) => { e.stopPropagation(); onListingClick?.(listing); }}
-              className="price-display bg-[var(--panel)] text-[var(--brick)] font-bold text-xs px-2.5 py-1.5 rounded-[var(--radius)] shadow-md border border-[var(--ink)] hover:bg-[var(--brick)] hover:text-[var(--panel)] transition-colors whitespace-nowrap"
+              className="group flex flex-col items-center"
             >
-              Rs {formatPrice(listing.priceMonthly)}
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[var(--brick)] text-white border-2 border-[var(--panel)] shadow-md group-hover:bg-[var(--brick-ink)] transition-colors">
+                <Home className="w-4 h-4" />
+              </span>
+              <span className="-mt-1 w-2.5 h-2.5 rotate-45 bg-[var(--brick)] border-r-2 border-b-2 border-[var(--panel)] group-hover:bg-[var(--brick-ink)] transition-colors" />
             </button>
           </Marker>
         );

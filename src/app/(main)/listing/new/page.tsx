@@ -188,16 +188,13 @@ export default function NewListingPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 py-8">
       {/* Header */}
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-light text-primary text-xs font-semibold mb-3">
-          <Building2 className="w-3.5 h-3.5" />
-          New Listing
-        </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground">
-          List Your Property
+      <div className="mb-8">
+        <p className="label text-[var(--brick)]">New listing</p>
+        <h1 className="mt-2 font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--ink)]">
+          List your property
         </h1>
-        <p className="mt-2 text-muted-foreground">
-          Reach students and professionals looking for housing
+        <p className="mt-2 text-[var(--ink-2)]">
+          Reach students and professionals looking for housing across Nepal. It takes a few minutes, and it is free.
         </p>
       </div>
 
@@ -207,12 +204,12 @@ export default function NewListingPage() {
           <div key={label} className="flex items-center">
             <button
               onClick={() => { if (i <= step) { setError(""); setStep(i); } }}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-semibold transition-all duration-300 ${
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-semibold transition-colors ${
                 i === step
-                  ? "bg-primary text-[var(--text)] shadow-warm-2 scale-105"
+                  ? "bg-[var(--brick)] text-[var(--panel)] shadow-warm-1"
                   : i < step
-                  ? "bg-accent-light text-accent cursor-pointer"
-                  : "bg-muted text-muted-foreground cursor-not-allowed opacity-60"
+                  ? "bg-[var(--verified-wash)] text-[var(--verified)] cursor-pointer"
+                  : "bg-[var(--paper-2)] text-[var(--ink-3)] cursor-not-allowed opacity-70"
               }`}
             >
               {i < step ? (
@@ -231,22 +228,25 @@ export default function NewListingPage() {
       </div>
 
       {error && (
-        <div className="mb-6 rounded-[14px] bg-red-50 dark:bg-red-950 border border-destructive p-4 text-sm text-destructive animate-shake">
+        <div className="mb-6 rounded-[var(--radius)] bg-[var(--danger-wash)] border border-[var(--danger)]/30 p-4 text-sm text-[var(--danger)] animate-shake">
           {error}
         </div>
       )}
 
       {/* Step content */}
-      <div className="rounded-[20px] border border-border bg-surface shadow-warm-2 overflow-hidden">
-        <div className="h-1 bg-gradient-to-r from-primary via-highlight to-accent" style={{ width: `${((step + 1) / STEPS.length) * 100}%`, transition: "width 0.5s ease" }} />
+      <div className="rounded-[var(--radius-lg)] border border-[var(--ink)] bg-[var(--panel)] overflow-hidden">
+        <div className="h-1 bg-[var(--paper-2)]">
+          <div className="h-full bg-[var(--brick)]" style={{ width: `${((step + 1) / STEPS.length) * 100}%`, transition: "width 0.5s ease" }} />
+        </div>
 
         <div className="p-6 sm:p-8">
           {/* Step 1: Basics */}
           {step === 0 && (
             <div className="space-y-6 animate-fade-in">
               <div>
-                <h2 className="text-lg font-bold text-foreground mb-1">Basic Information</h2>
-                <p className="text-sm text-muted-foreground">Tell us about your property</p>
+                <p className="label text-[var(--brick)]">Step 1 · Basics</p>
+                <h2 className="mt-1.5 font-display text-xl font-bold tracking-tight text-[var(--ink)]">Basic information</h2>
+                <p className="mt-1 text-sm text-[var(--ink-2)]">Tell us about your property</p>
               </div>
 
               <Input
@@ -285,8 +285,8 @@ export default function NewListingPage() {
                           : "border-border hover:border-primary/30 hover:bg-muted"
                       }`}
                     >
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${
-                        selectedType === value ? "bg-primary text-[var(--text)]" : "bg-muted text-muted-foreground"
+                      <div className={`w-10 h-10 rounded-[var(--radius)] flex items-center justify-center flex-shrink-0 transition-colors ${
+                        selectedType === value ? "bg-[var(--brick)] text-[var(--panel)]" : "bg-[var(--paper-2)] text-[var(--ink-3)]"
                       }`}>
                         <Icon className="w-5 h-5" />
                       </div>
@@ -305,8 +305,9 @@ export default function NewListingPage() {
           {step === 1 && (
             <div className="space-y-6 animate-fade-in">
               <div>
-                <h2 className="text-lg font-bold text-foreground mb-1">Location</h2>
-                <p className="text-sm text-muted-foreground">Where is your property located?</p>
+                <p className="label text-[var(--brick)]">Step 2 · Location</p>
+                <h2 className="mt-1.5 font-display text-xl font-bold tracking-tight text-[var(--ink)]">Where is it?</h2>
+                <p className="mt-1 text-sm text-[var(--ink-2)]">Where is your property located?</p>
               </div>
 
               <Input
@@ -401,8 +402,9 @@ export default function NewListingPage() {
           {step === 2 && (
             <div className="space-y-6 animate-fade-in">
               <div>
-                <h2 className="text-lg font-bold text-foreground mb-1">Pricing & Availability</h2>
-                <p className="text-sm text-muted-foreground">Set your rent and deposit amounts</p>
+                <p className="label text-[var(--brick)]">Step 3 · Pricing</p>
+                <h2 className="mt-1.5 font-display text-xl font-bold tracking-tight text-[var(--ink)]">Pricing and availability</h2>
+                <p className="mt-1 text-sm text-[var(--ink-2)]">Set your rent and deposit amounts</p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -461,8 +463,9 @@ export default function NewListingPage() {
           {step === 3 && (
             <div className="space-y-6 animate-fade-in">
               <div>
-                <h2 className="text-lg font-bold text-foreground mb-1">Amenities & Photos</h2>
-                <p className="text-sm text-muted-foreground">What does your property offer?</p>
+                <p className="label text-[var(--brick)]">Step 4 · Details</p>
+                <h2 className="mt-1.5 font-display text-xl font-bold tracking-tight text-[var(--ink)]">Amenities and photos</h2>
+                <p className="mt-1 text-sm text-[var(--ink-2)]">What does your property offer?</p>
               </div>
 
               {/* Amenity grid */}
