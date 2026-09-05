@@ -18,7 +18,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
   return (
     <Link
       href={`/listing/${listing.id}`}
-      className="group block rounded-[var(--radius-lg)] overflow-hidden bg-[var(--panel)] border border-[var(--line)] transition-[border-color,transform] duration-200 hover:border-[var(--ink)] hover:-translate-y-0.5"
+      className="group block rounded-[var(--radius-lg)] overflow-hidden bg-[var(--panel)] border border-[var(--line)] transition-[border-color,transform] duration-200 hover:border-[var(--line-strong)] hover:-translate-y-0.5"
     >
       {/* Photo */}
       <div className="relative aspect-[4/3] overflow-hidden bg-[var(--paper-2)]">
@@ -36,7 +36,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
         )}
 
         {/* Property type — ink chip, top left */}
-        <span className="label absolute top-3 left-3 rounded-[var(--radius-sm)] bg-[var(--panel)] text-[var(--ink)] border border-[var(--ink)] px-2 py-1">
+        <span className="label absolute top-3 left-3 rounded-[var(--radius-sm)] bg-[var(--panel)] text-[var(--ink)] border border-[var(--line-strong)] px-2 py-1">
           {PROPERTY_TYPE_LABELS[listing.propertyType]}
         </span>
 

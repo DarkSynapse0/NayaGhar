@@ -71,12 +71,12 @@ export function Navbar() {
 
   return (
     <>
-      <header className="fixed top-0 inset-x-0 z-50 border-b-2 border-[var(--ink)] bg-[var(--paper)]/90 backdrop-blur-sm">
+      <header className="fixed top-0 inset-x-0 z-50 border-b border-[var(--line)] bg-[var(--paper)]/90 backdrop-blur-sm">
         <nav className="mx-auto flex h-14 max-w-7xl items-center justify-between px-5 sm:px-8">
           {/* Logo */}
           <Link href="/" className="flex items-center justify-center gap-2 group">
-            <LogoIcon size={44} />
-            <span className="font-display text-lg font-extrabold tracking-tight text-[var(--ink)]">
+            <LogoIcon size={40} />
+            <span className="font-display text-2xl font-extrabold tracking-tight text-[var(--ink)]">
               Naya<span className="text-[var(--brick)]">Ghar</span>
             </span>
           </Link>
@@ -115,7 +115,7 @@ export function Navbar() {
                   <ChevronDown className={`w-3 h-3 text-[var(--ink-3)] transition-transform duration-200 ${userMenuOpen ? "rotate-180" : ""}`} />
                 </button>
                 {userMenuOpen && (
-                  <div className="absolute top-full right-0 mt-2 w-56 bg-[var(--panel)] rounded-[var(--radius)] border border-[var(--ink)] shadow-warm-3 overflow-hidden animate-scale-in z-50">
+                  <div className="absolute top-full right-0 mt-2 w-56 bg-[var(--panel)] rounded-[var(--radius)] border border-[var(--line-strong)] shadow-warm-3 overflow-hidden animate-scale-in z-50">
                     <div className="px-4 py-3 border-b border-[var(--line)]">
                       <p className="text-sm font-semibold text-[var(--ink)] truncate">{session.user?.name}</p>
                       <p className="label text-[var(--ink-3)] mt-1">{role} account</p>
@@ -160,7 +160,7 @@ export function Navbar() {
                 <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${langOpen ? "rotate-180" : ""}`} />
               </button>
               {langOpen && (
-                <div className="absolute top-full right-0 mt-2 w-40 bg-[var(--panel)] rounded-[var(--radius)] border border-[var(--ink)] shadow-warm-3 overflow-hidden animate-scale-in z-50">
+                <div className="absolute top-full right-0 mt-2 w-40 bg-[var(--panel)] rounded-[var(--radius)] border border-[var(--line-strong)] shadow-warm-3 overflow-hidden animate-scale-in z-50">
                   {LANGUAGES.map((l) => (
                     <button
                       key={l.code}
@@ -201,12 +201,12 @@ export function Navbar() {
       {open && (
         <div className="fixed inset-0 z-[100] md:hidden">
           <div className={`absolute inset-0 bg-[var(--ink)]/40 backdrop-blur-sm transition-opacity duration-250 ${closing ? "opacity-0" : "animate-fade-in"}`} onClick={closeSheet} />
-          <div className={`absolute top-0 right-0 h-full w-[300px] max-w-[85vw] bg-[var(--panel)] border-l-2 border-[var(--ink)] flex flex-col shadow-warm-4 transition-transform duration-250 ease-out ${closing ? "translate-x-full" : "animate-slide-in-right"}`}>
+          <div className={`absolute top-0 right-0 h-full w-[300px] max-w-[85vw] bg-[var(--panel)] border-l border-[var(--line)] flex flex-col shadow-warm-4 transition-transform duration-250 ease-out ${closing ? "translate-x-full" : "animate-slide-in-right"}`}>
 
-            <div className="flex items-center justify-between px-5 h-14 border-b-2 border-[var(--ink)]">
+            <div className="flex items-center justify-between px-5 h-14 border-b border-[var(--line)]">
               <Link href="/" className="flex items-center gap-2" onClick={closeSheet}>
-                <LogoIcon size={38} />
-                <span className="font-display text-base font-extrabold text-[var(--ink)]">Naya<span className="text-[var(--brick)]">Ghar</span></span>
+                <LogoIcon size={46} />
+                <span className="font-display text-xl font-extrabold text-[var(--ink)]">Naya<span className="text-[var(--brick)]">Ghar</span></span>
               </Link>
               <button type="button" aria-label="Close menu" onClick={closeSheet} className="w-10 h-10 rounded-[var(--radius)] flex items-center justify-center hover:bg-[var(--paper-2)]">
                 <X className="w-4 h-4 text-[var(--ink-2)]" />
@@ -265,7 +265,7 @@ export function Navbar() {
             </div>
 
             {session && (
-              <div className="border-t-2 border-[var(--ink)] p-4">
+              <div className="border-t border-[var(--line)] p-4">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-9 h-9 rounded-[var(--radius-sm)] bg-[var(--brick)] flex items-center justify-center text-sm font-bold text-[var(--panel)]">
                     {session.user?.name?.charAt(0).toUpperCase()}

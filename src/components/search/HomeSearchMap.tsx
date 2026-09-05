@@ -82,14 +82,14 @@ export function HomeSearchMap({ listings }: { listings: Listing[] }) {
   }, [applied]);
 
   const fieldClass =
-    "h-11 rounded-[var(--radius)] bg-[var(--paper)] border border-[var(--ink)] px-3 text-sm text-[var(--ink)] focus:outline-none focus:border-[var(--brick)]";
+    "h-11 rounded-[var(--radius)] bg-[var(--paper)] border border-[var(--line-strong)] px-3 text-sm text-[var(--ink)] focus:outline-none focus:border-[var(--brick)]";
 
   return (
     <div className="grid lg:grid-cols-[320px_1fr] gap-4 lg:items-start">
       {/* Left — search only (results appear on the map) */}
-      <div className="rounded-[var(--radius-lg)] border-2 border-[var(--ink)] bg-[var(--panel)] p-4">
+      <div className="rounded-[var(--radius-lg)] border border-[var(--line)] bg-[var(--panel)] p-4">
         <form onSubmit={(e) => { e.preventDefault(); apply(draft); }} className="space-y-2.5">
-          <div className="flex items-center gap-2 h-11 rounded-[var(--radius)] bg-[var(--paper)] border border-[var(--ink)] px-3">
+          <div className="flex items-center gap-2 h-11 rounded-[var(--radius)] bg-[var(--paper)] border border-[var(--line-strong)] px-3">
             <Search className="w-4 h-4 text-[var(--ink-3)] shrink-0" />
             <input
               value={draft.q}
@@ -164,8 +164,8 @@ export function HomeSearchMap({ listings }: { listings: Listing[] }) {
                   onClick={() => apply({ ...applied, q: kw })}
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[var(--radius)] border text-[13px] font-semibold transition-colors ${
                     active
-                      ? "bg-[var(--brick)] border-[var(--ink)] text-[var(--panel)]"
-                      : "bg-[var(--paper)] border-[var(--ink)] text-[var(--ink)] hover:text-[var(--brick)]"
+                      ? "bg-[var(--brick)] border-[var(--line-strong)] text-[var(--panel)]"
+                      : "bg-[var(--paper)] border-[var(--line-strong)] text-[var(--ink)] hover:text-[var(--brick)]"
                   }`}
                 >
                   <MapPin className="w-3.5 h-3.5" /> {kw}
@@ -177,7 +177,7 @@ export function HomeSearchMap({ listings }: { listings: Listing[] }) {
       </div>
 
       {/* Right — map (the results, as home pins) */}
-      <div className="relative h-[420px] lg:h-[560px] rounded-[var(--radius-lg)] overflow-hidden border-2 border-[var(--ink)]">
+      <div className="relative h-[420px] lg:h-[560px] rounded-[var(--radius-lg)] overflow-hidden border border-[var(--line)]">
         <MapView listings={filtered} focus={focus} initialCenter={NEPAL} />
       </div>
     </div>

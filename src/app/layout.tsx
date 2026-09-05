@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SessionProvider } from "@/components/providers/SessionProvider";
 import { LanguageProvider } from "@/components/providers/LanguageProvider";
+import ChatWidget from "@/components/ChatWidget";
 import "./globals.css";
 
 // Display: signage-grade grotesque for headlines, prices, labels (Latin).
@@ -38,6 +39,7 @@ export default function RootLayout({
         <SessionProvider>
           <LanguageProvider>
             {children}
+            <ChatWidget />
           </LanguageProvider>
         </SessionProvider>
         <Analytics />

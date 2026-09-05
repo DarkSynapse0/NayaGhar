@@ -39,13 +39,13 @@ export function FilterBar() {
   }
 
   const field =
-    "h-11 rounded-[var(--radius)] bg-[var(--paper)] border border-[var(--ink)] px-3 text-sm text-[var(--ink)] focus:outline-none focus:border-[var(--brick)]";
+    "h-11 rounded-[var(--radius)] bg-[var(--paper)] border border-[var(--line-strong)] px-3 text-sm text-[var(--ink)] focus:outline-none focus:border-[var(--brick)]";
 
   return (
-    <div className="hidden lg:flex w-full items-center gap-2 p-2 rounded-[var(--radius-lg)] border-2 border-[var(--ink)] bg-[var(--panel)]">
+    <div className="hidden lg:flex w-full items-center gap-2 p-2 rounded-[var(--radius-lg)] border border-[var(--line)] bg-[var(--panel)]">
       <form
         onSubmit={(e) => { e.preventDefault(); push({ q }); }}
-        className="flex items-center gap-2 flex-1 min-w-0 h-11 px-3 rounded-[var(--radius)] bg-[var(--paper)] border border-[var(--ink)]"
+        className="flex items-center gap-2 flex-1 min-w-0 h-11 px-3 rounded-[var(--radius)] bg-[var(--paper)] border border-[var(--line-strong)]"
       >
         <Search className="w-4 h-4 text-[var(--ink-3)] shrink-0" />
         <input

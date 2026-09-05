@@ -234,7 +234,7 @@ export default function NewListingPage() {
       )}
 
       {/* Step content */}
-      <div className="rounded-[var(--radius-lg)] border border-[var(--ink)] bg-[var(--panel)] overflow-hidden">
+      <div className="rounded-[var(--radius-lg)] border border-[var(--line-strong)] bg-[var(--panel)] overflow-hidden">
         <div className="h-1 bg-[var(--paper-2)]">
           <div className="h-full bg-[var(--brick)]" style={{ width: `${((step + 1) / STEPS.length) * 100}%`, transition: "width 0.5s ease" }} />
         </div>

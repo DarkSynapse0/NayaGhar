@@ -23,7 +23,7 @@ export default async function DashboardPage() {
   const session = await auth();
   if (!session?.user) redirect("/login");
   const { id, name: userName, role } = session.user;
-  const name = userName || "Landlord";
+  const name = userName || "there";
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 

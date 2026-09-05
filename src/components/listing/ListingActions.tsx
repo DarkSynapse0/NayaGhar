@@ -45,7 +45,7 @@ export function ListingActions({ listingId, title }: { listingId: string; title:
   }
 
   const btn =
-    "inline-flex items-center gap-1.5 h-9 px-3.5 rounded-[var(--radius)] border border-[var(--ink)] bg-[var(--panel)] text-sm font-semibold text-[var(--ink)] hover:bg-[var(--paper-2)] transition-colors";
+    "inline-flex items-center gap-1.5 h-9 px-3.5 rounded-[var(--radius)] border border-[var(--line-strong)] bg-[var(--panel)] text-sm font-semibold text-[var(--ink)] hover:bg-[var(--paper-2)] transition-colors";
 
   return (
     <div className="flex items-center gap-2 shrink-0">

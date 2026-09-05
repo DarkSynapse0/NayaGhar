@@ -1,13 +1,15 @@
 import Image from "next/image";
 
-export function LogoIcon({ size = 20 }: { size?: number }) {
+// The logo artwork is landscape (343×210). `size` is the rendered height;
+// width follows the true aspect ratio so the mark never letterboxes.
+export function LogoIcon({ size = 20, className = "" }: { size?: number; className?: string }) {
   return (
     <Image
       src="/logo.png"
       alt="NayaGhar"
-      width={size}
+      width={Math.round((size * 343) / 210)}
       height={size}
-      className="object-contain justify-center"
+      className={`object-contain ${className}`}
     />
   );
 }

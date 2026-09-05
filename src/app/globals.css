@@ -18,30 +18,42 @@
   --ink-2: oklch(0.42 0.014 62);
   --ink-3: oklch(0.56 0.011 62);
 
-  /* Lines */
-  --line: oklch(0.86 0.012 78);
-  --line-strong: oklch(0.23 0.017 62);
+  /* Lines — softened: gentle hairlines, no more near-black or sharp rules.
+     Structure is carried by fills + soft shadow, not hard outlines. */
+  --line: oklch(0.905 0.008 78);
+  --line-strong: oklch(0.82 0.011 62);
 
-  /* Voice — brick */
-  --brick: oklch(0.55 0.15 40);
-  --brick-ink: oklch(0.44 0.15 40);
-  --brick-wash: oklch(0.55 0.15 40 / 0.10);
+  /* Voice — brick, tuned to the logo's house orange (#CC560C) */
+  --brick: oklch(0.57 0.15 46);
+  --brick-ink: oklch(0.46 0.15 46);
+  --brick-wash: oklch(0.57 0.15 46 / 0.10);
+
+  /* Secondary brand — logo building/mountain blue (#045798) */
+  --sky: oklch(0.50 0.12 245);
+  --sky-ink: oklch(0.42 0.12 245);
+  --sky-wash: oklch(0.50 0.12 245 / 0.10);
+
+  /* Warm brand highlight — logo sun / pagoda gold (#DAA00D) */
+  --gold: oklch(0.75 0.13 85);
+  --gold-ink: oklch(0.58 0.12 78);
+  --gold-wash: oklch(0.75 0.13 85 / 0.16);
 
   /* Functional status */
   --verified: oklch(0.52 0.13 150);
   --verified-wash: oklch(0.56 0.13 150 / 0.12);
-  --pending: oklch(0.62 0.14 72);
-  --pending-wash: oklch(0.72 0.15 72 / 0.16);
-  --geo: oklch(0.50 0.12 242);
-  --geo-wash: oklch(0.52 0.11 242 / 0.12);
+  --pending: var(--gold-ink);
+  --pending-wash: var(--gold-wash);
+  --geo: var(--sky);
+  --geo-wash: var(--sky-wash);
   --whatsapp: oklch(0.62 0.16 152);
   --danger: oklch(0.53 0.20 27);
   --danger-wash: oklch(0.53 0.20 27 / 0.12);
 
-  /* Radii */
-  --radius: 0.375rem;
-  --radius-sm: 0.25rem;
-  --radius-lg: 0.625rem;
+  /* Radii — rounder, softer corners throughout */
+  --radius: 0.625rem;
+  --radius-sm: 0.4rem;
+  --radius-lg: 0.9rem;
+  --radius-xl: 1.25rem;
 
   /* ---- Legacy aliases (map old component vars onto the new palette) ---- */
   --bg: var(--paper);
@@ -60,7 +72,9 @@
   --red: var(--danger);
   --border: var(--line);
   --border-hover: var(--ink-3);
-  --ring: oklch(0.55 0.15 40 / 0.35);
+  --ring: oklch(0.57 0.15 46 / 0.32);
+  --secondary: var(--sky);
+  --secondary-hover: var(--sky-ink);
 }
 
 @theme inline {
@@ -82,6 +96,8 @@
   --color-panel: var(--panel);
   --color-ink: var(--ink);
   --color-brick: var(--brick);
+  --color-sky: var(--sky);
+  --color-gold: var(--gold);
   --color-verified: var(--verified);
   --color-pending: var(--pending);
   --color-geo: var(--geo);
@@ -141,9 +157,9 @@ h1, h2, h3, h4, .font-display {
   border-radius: var(--radius);
 }
 
-/* Hard offset "stamp" shadow — poster/signage character. Use sparingly. */
-.shadow-block { box-shadow: 3px 3px 0 var(--ink); }
-.shadow-block-brick { box-shadow: 3px 3px 0 var(--brick); }
+/* Softened "stamp" shadow — keeps a gentle directional lift, no hard edge. */
+.shadow-block { box-shadow: 2px 4px 12px oklch(0.23 0.017 62 / 0.12), 0 1px 3px oklch(0.23 0.017 62 / 0.08); }
+.shadow-block-brick { box-shadow: 2px 4px 14px oklch(0.57 0.15 46 / 0.24), 0 1px 3px oklch(0.57 0.15 46 / 0.14); }
 
 /* Soft paper elevation for the rare floating surface (menus, sheets). */
 .shadow-warm-1 { box-shadow: 0 1px 2px oklch(0.23 0.017 62 / 0.08); }

@@ -128,12 +128,12 @@ export function MapView({
       {selectable && selected && (
         <>
           {/* Desktop: docked full-height panel at the right edge of the map. */}
-          <div className="hidden md:flex absolute inset-y-0 right-0 z-10 w-[340px] max-w-[75%] flex-col bg-[var(--panel)] border-l-2 border-[var(--ink)] shadow-warm-3 animate-slide-in-right">
+          <div className="hidden md:flex absolute inset-y-0 right-0 z-10 w-[340px] max-w-[75%] flex-col bg-[var(--panel)] border-l border-[var(--line)] shadow-warm-3 animate-slide-in-right">
             <button
               type="button"
               aria-label="Close"
               onClick={close}
-              className="absolute top-3 right-3 z-20 w-9 h-9 rounded-[var(--radius)] bg-[var(--panel)] border border-[var(--ink)] flex items-center justify-center hover:bg-[var(--paper-2)] transition-colors shadow-warm-1"
+              className="absolute top-3 right-3 z-20 w-9 h-9 rounded-[var(--radius)] bg-[var(--panel)] border border-[var(--line-strong)] flex items-center justify-center hover:bg-[var(--paper-2)] transition-colors shadow-warm-1"
             >
               <X className="w-4 h-4 text-[var(--ink)]" />
             </button>
@@ -142,7 +142,7 @@ export function MapView({
 
           {/* Mobile: bottom-sheet that overlays the screen (not clipped by the map box). */}
           <div className="md:hidden fixed inset-0 z-[55] bg-[var(--ink)]/30 animate-fade-in" onClick={close} />
-          <div className="md:hidden fixed inset-x-0 bottom-0 z-[60] max-h-[82vh] flex flex-col overflow-hidden bg-[var(--panel)] border-t-2 border-[var(--ink)] rounded-t-2xl shadow-warm-4 animate-slide-in-up">
+          <div className="md:hidden fixed inset-x-0 bottom-0 z-[60] max-h-[82vh] flex flex-col overflow-hidden bg-[var(--panel)] border-t border-[var(--line)] rounded-t-2xl shadow-warm-4 animate-slide-in-up">
             {/* Sheet header: grab handle + close */}
             <div className="relative flex items-center justify-center pt-3 pb-2 shrink-0">
               <div className="w-10 h-1 rounded-full bg-[var(--ink)]/20" />
@@ -180,7 +180,7 @@ function InfoCard({ listing }: { listing: Listing }) {
               <span className="label text-[var(--ink-3)]">No photo yet</span>
             </div>
           )}
-          <span className="label absolute top-3 left-3 rounded-[var(--radius-sm)] bg-[var(--panel)] text-[var(--ink)] border border-[var(--ink)] px-2 py-1">
+          <span className="label absolute top-3 left-3 rounded-[var(--radius-sm)] bg-[var(--panel)] text-[var(--ink)] border border-[var(--line-strong)] px-2 py-1">
             {PROPERTY_TYPE_LABELS[listing.propertyType] ?? listing.propertyType}
           </span>
           {listing.isVerified && (

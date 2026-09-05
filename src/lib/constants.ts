@@ -1,5 +1,5 @@
 import {
-  Wifi, Snowflake, WashingMachine, UtensilsCrossed, Car, Zap, Droplets, Sofa, Shield, Camera,
+  Wifi, Snowflake, WashingMachine, UtensilsCrossed, SquareParking, Zap, Droplets, Sofa, Shield, Cctv,
   DoorOpen, Building2, Users, BedDouble,
 } from "lucide-react";
 
@@ -25,12 +25,12 @@ export const AMENITY_ICONS: Record<string, typeof Wifi> = {
   AC: Snowflake,
   Laundry: WashingMachine,
   Kitchen: UtensilsCrossed,
-  Parking: Car,
+  Parking: SquareParking,
   "Power Backup": Zap,
   "Water Supply": Droplets,
   Furnished: Sofa,
   Security: Shield,
-  CCTV: Camera,
+  CCTV: Cctv,
 };
 
 /** Amenity options for listing creation form (all available amenities). */

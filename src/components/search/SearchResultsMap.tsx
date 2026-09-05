@@ -51,7 +51,7 @@ export function SearchResultsMap({
     <button
       type="button"
       onClick={() => setView(mode)}
-      className={`inline-flex items-center gap-1.5 h-9 px-3.5 text-[13px] font-semibold transition-colors ${borderLeft ? "border-l border-[var(--ink)]" : ""} ${
+      className={`inline-flex items-center gap-1.5 h-9 px-3.5 text-[13px] font-semibold transition-colors ${borderLeft ? "border-l border-[var(--line-strong)]" : ""} ${
         view === mode ? "bg-[var(--brick)] text-[var(--panel)]" : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--paper-2)]"
       }`}
     >
@@ -76,7 +76,7 @@ export function SearchResultsMap({
             <span className="price-display font-bold text-[var(--ink)] text-base">{count}</span>{" "}
             {count === 1 ? "room" : "rooms"}
           </p>
-          <div className="inline-flex rounded-[var(--radius)] border border-[var(--ink)] overflow-hidden">
+          <div className="inline-flex rounded-[var(--radius)] border border-[var(--line-strong)] overflow-hidden">
             {toggleBtn("grid", LayoutGrid, "Grid")}
             {toggleBtn("map", MapIcon, "Map", true)}
           </div>
@@ -96,7 +96,7 @@ export function SearchResultsMap({
       ) : (
         /* Map: full-width map (results shown as pins) */
         <div className="lg:flex-1 lg:min-h-0">
-          <div className="h-[70vh] lg:h-full rounded-[var(--radius-lg)] overflow-hidden border-2 border-[var(--ink)]">
+          <div className="h-[70vh] lg:h-full rounded-[var(--radius-lg)] overflow-hidden border border-[var(--line)]">
             <MapView listings={listings} focus={focus} initialCenter={NEPAL} />
           </div>
         </div>

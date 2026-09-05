@@ -13,9 +13,10 @@ import { DepositCTA } from "@/components/listing/DepositCTA";
 import { ReviewForm } from "@/components/listing/ReviewForm";
 import { ListingActions } from "@/components/listing/ListingActions";
 import { formatPrice, AMENITY_ICONS, PROPERTY_TYPE_LABELS } from "@/lib/constants";
+import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
 import {
   BadgeCheck, MapPin, MessageCircle, Star, Shield, Phone,
-  CalendarDays, Home, ArrowLeft, Camera, KeyRound, ArrowRight, Check,
+  CalendarDays, Home, ArrowLeft, Camera, KeyRound, ArrowRight, Check, LogIn,
 } from "lucide-react";
 
 // Amenities organised into named groups (reference "Features" layout).
@@ -273,7 +274,7 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
             <section>
               <p className="label text-[var(--geo)]">Location</p>
               <h2 className="mt-1.5 mb-3 font-display text-xl font-bold tracking-tight">Where you&apos;ll be</h2>
-              <div className="rounded-[var(--radius-lg)] overflow-hidden border border-[var(--ink)] h-64 sm:h-80">
+              <div className="rounded-[var(--radius-lg)] overflow-hidden border border-[var(--line-strong)] h-64 sm:h-80">
                 <ListingDetailMap latitude={listing.latitude} longitude={listing.longitude} title={listing.title} />
               </div>
               <p className="mt-2 text-xs text-[var(--ink-3)]">
@@ -332,7 +333,7 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
           <div className="lg:col-span-1">
             <div className="lg:sticky lg:top-20 space-y-4">
               {/* Price + contact */}
-              <div className="rounded-[var(--radius-lg)] bg-[var(--panel)] border border-[var(--ink)] p-5">
+              <div className="rounded-[var(--radius-lg)] bg-[var(--panel)] border border-[var(--line-strong)] p-5">
                 <div className="flex items-baseline gap-1.5">
                   <span className="price-display text-3xl font-black text-[var(--brick)]">{formatPrice(listing.priceMonthly)}</span>
                   <span className="text-sm text-[var(--ink-3)]">/month</span>
@@ -355,21 +356,28 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
 
                 {!isOwner && (
                   <div className="mt-4 space-y-2">
-                    {waHref ? (
+                    {!session?.user?.id ? (
+                      <Link
+                        href="/login"
+                        className="flex items-center justify-center gap-2 w-full h-12 rounded-[var(--radius)] bg-[var(--brick)] text-[var(--panel)] font-display font-bold shadow-block active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-transform"
+                      >
+                        <LogIn className="w-5 h-5" /> Sign in to contact
+                      </Link>
+                    ) : waHref ? (
                       <a
                         href={waHref}
                         target="_blank"
                         rel="noreferrer"
                         className="flex items-center justify-center gap-2 w-full h-12 rounded-[var(--radius)] bg-[var(--whatsapp)] text-white font-display font-bold shadow-block active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-transform"
                       >
-                        <MessageCircle className="w-5 h-5" /> Message on WhatsApp
+                        <WhatsAppIcon className="w-5 h-5" /> Message on WhatsApp
                       </a>
                     ) : (
                       <div className="flex items-center justify-center gap-2 w-full h-12 rounded-[var(--radius)] bg-[var(--paper-2)] border border-[var(--line)] text-[var(--ink-3)] font-display font-bold">
                         <MessageCircle className="w-5 h-5" /> Contact unavailable
                       </div>
                     )}
-                    {listing.deposit && listing.isActive && (
+                    {session?.user?.id && listing.deposit && listing.isActive && (
                       <DepositCTA
                         listingId={listing.id}
                         listingTitle={listing.title}

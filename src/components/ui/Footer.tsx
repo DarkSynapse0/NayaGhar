@@ -6,15 +6,15 @@ import { MapPin, Mail } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="border-t-2 border-[var(--ink)] bg-[var(--paper-2)]">
+    <footer className="border-t border-[var(--line)] bg-[var(--paper-2)]">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         {/* Main grid */}
         <div className="py-14 grid grid-cols-2 sm:grid-cols-4 gap-10 sm:gap-8">
           {/* Brand */}
           <div className="col-span-2 sm:col-span-1">
             <Link href="/" className="flex items-center gap-2">
-              <LogoIcon size={44} />
-              <span className="font-display text-lg font-extrabold tracking-tight text-[var(--ink)]">
+              <LogoIcon size={56} />
+              <span className="font-display text-2xl font-extrabold tracking-tight text-[var(--ink)]">
                 Naya<span className="text-[var(--brick)]">Ghar</span>
               </span>
             </Link>

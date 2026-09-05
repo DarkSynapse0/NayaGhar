@@ -123,7 +123,7 @@ export function MobileFilterSheet({ defaultQuery, defaultCity }: { defaultQuery:
             className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-250 ${closing ? "opacity-0" : "animate-fade-in"}`}
             onClick={close}
           />
-          <div className={`absolute bottom-0 inset-x-0 max-h-[85vh] bg-[var(--panel)] border-t-2 border-[var(--ink)] rounded-t-2xl flex flex-col transition-transform duration-300 ease-out ${closing ? "translate-y-full" : "animate-slide-in-up"}`}>
+          <div className={`absolute bottom-0 inset-x-0 max-h-[85vh] bg-[var(--panel)] border-t border-[var(--line)] rounded-t-2xl flex flex-col transition-transform duration-300 ease-out ${closing ? "translate-y-full" : "animate-slide-in-up"}`}>
             {/* Handle */}
             <div className="flex items-center justify-center pt-3 pb-1">
               <div className="w-10 h-1 rounded-full bg-[var(--ink)]/20" />

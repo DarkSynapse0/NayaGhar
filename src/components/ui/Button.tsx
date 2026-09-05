@@ -14,8 +14,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<Variant, string> = {
   primary: "bg-[var(--brick)] text-[var(--panel)] hover:bg-[var(--brick-ink)] border border-[var(--brick)]",
-  secondary: "bg-[var(--panel)] text-[var(--ink)] border border-[var(--ink)] hover:bg-[var(--paper-2)]",
-  outline: "bg-transparent text-[var(--ink)] border border-[var(--line)] hover:border-[var(--ink)]",
+  secondary: "bg-[var(--sky-wash)] text-[var(--sky-ink)] border border-[var(--sky)]/35 hover:bg-[var(--sky)] hover:text-[var(--panel)] hover:border-[var(--sky)]",
+  outline: "bg-transparent text-[var(--ink)] border border-[var(--line)] hover:border-[var(--sky)] hover:text-[var(--sky-ink)]",
   ghost: "bg-transparent text-[var(--ink-2)] hover:text-[var(--ink)] hover:bg-[var(--paper-2)] border border-transparent",
   destructive: "bg-[var(--danger)] text-white hover:opacity-90 border border-[var(--danger)]",
   whatsapp: "bg-[var(--whatsapp)] text-white hover:opacity-90 border border-[var(--whatsapp)]",
@@ -51,7 +51,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={buttonRef}
-        className={`ripple inline-flex items-center justify-center rounded-[var(--radius)] font-display font-bold tracking-tight transition-[background-color,color,border-color,box-shadow,transform] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] disabled:pointer-events-none disabled:opacity-40 active:translate-y-px ${variantStyles[variant]} ${sizeStyles[size]} ${block ? "shadow-block active:shadow-none active:translate-x-[3px] active:translate-y-[3px]" : ""} ${className}`}
+        className={`ripple inline-flex items-center justify-center rounded-[var(--radius)] font-display font-bold tracking-tight transition-[background-color,color,border-color,box-shadow,transform] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] disabled:pointer-events-none disabled:opacity-40 active:translate-y-px ${variantStyles[variant]} ${sizeStyles[size]} ${block ? "shadow-block hover:-translate-y-px active:translate-y-0 active:shadow-warm-1" : ""} ${className}`}
         onClick={handleClick}
         {...props}
       >

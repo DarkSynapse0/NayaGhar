@@ -8,9 +8,11 @@ import { listings } from "@/lib/db/schema";
 import { withAnon } from "@/lib/db/rls";
 import { desc, eq } from "drizzle-orm";
 import { RegisterButton } from "@/components/ui/ListPropertyButton";
+import { LogoIcon } from "@/components/ui/Logo";
 import { CITIES, formatPriceValue } from "@/lib/constants";
+import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
 import {
-  Search, MapPin, ShieldCheck, Sparkles, BadgeCheck, Star, MessageCircle,
+  Search, MapPin, ShieldCheck, Sparkles, BadgeCheck, Star,
   Languages, ArrowRight, ArrowUpRight, CheckCircle2, Quote, Wallet, Building2,
 } from "lucide-react";
 
@@ -51,7 +53,7 @@ export default async function HomePage() {
   const offers = [
     { icon: BadgeCheck, title: "Verification you can rely on", body: "Every verified listing has confirmed photos and a phone-verified owner." },
     { icon: Star, title: "Reviews from real tenants", body: "Read honest experiences from people who actually stayed there before you decide." },
-    { icon: MessageCircle, title: "One-tap WhatsApp contact", body: "Reach the landlord directly. No account, no middleman, no app download needed." },
+    { icon: WhatsAppIcon, title: "One-tap WhatsApp contact", body: "Reach the landlord directly. No account, no middleman, no app download needed." },
     { icon: Languages, title: "Built for Nepal", body: "Bilingual and light on data, so it works on any phone and any connection." },
   ];
 
@@ -76,9 +78,12 @@ export default async function HomePage() {
       <div className="h-14" />
 
       {/* ── 1 · Hero (value proposition first) ───────────────── */}
-      <section className="relative border-b-2 border-[var(--ink)] dot-grid">
+      <section className="relative border-b border-[var(--line)] dot-grid">
         <div className="mx-auto max-w-6xl px-5 sm:px-8 pt-16 pb-16 sm:pt-24 sm:pb-24 text-center">
           <FadeIn>
+            <LogoIcon size={200} className="mx-auto mb-7 h-auto w-52 sm:w-72" />
+          </FadeIn>
+          <FadeIn delay={0.03}>
             <p className="label text-[var(--brick)]">Verified housing · Nepal</p>
           </FadeIn>
           <FadeIn delay={0.05}>
@@ -105,7 +110,7 @@ export default async function HomePage() {
               </Link>
               <Link
                 href="#offer"
-                className="inline-flex items-center justify-center gap-2 h-12 px-7 rounded-[var(--radius)] bg-[var(--panel)] border border-[var(--ink)] text-[var(--ink)] font-display font-bold hover:bg-[var(--paper-2)] transition-colors"
+                className="inline-flex items-center justify-center gap-2 h-12 px-7 rounded-[var(--radius)] bg-[var(--panel)] border border-[var(--line-strong)] text-[var(--ink)] font-display font-bold hover:bg-[var(--paper-2)] transition-colors"
               >
                 How it works
               </Link>
@@ -115,7 +120,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── 2 · Search + map (split: results left, map right) ── */}
-      <section id="search" className="border-b-2 border-[var(--ink)] bg-[var(--panel)] scroll-mt-16">
+      <section id="search" className="border-b border-[var(--line)] bg-[var(--panel)] scroll-mt-16">
         <div className="mx-auto max-w-6xl px-5 sm:px-8 py-12 sm:py-16">
           <div className="mb-7 max-w-xl">
             <p className="label text-[var(--geo)]">Search the map</p>
@@ -294,7 +299,7 @@ export default async function HomePage() {
       {/* ── Landlord CTA ─────────────────────────────────────── */}
       <section className="py-16 sm:py-20">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
-          <div className="rounded-[var(--radius-lg)] border-2 border-[var(--ink)] bg-[var(--brick)] text-[var(--panel)] px-6 sm:px-12 py-12 sm:py-14">
+          <div className="rounded-[var(--radius-lg)] border border-[var(--line)] bg-[var(--brick)] text-[var(--panel)] px-6 sm:px-12 py-12 sm:py-14">
             <div className="max-w-2xl">
               <h2 className="font-display text-2xl sm:text-4xl font-black tracking-tight leading-tight">
                 List your property, reach thousands of renters.
